@@ -2,489 +2,326 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cloud 9 Digital Menu</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --sand: #F2E8D5;
-    --deep: #1C1208;
-    --amber: #C8843A;
-    --rust: #A84B2A;
-    --cream: #FAF4E8;
-    --brown: #5C3317;
-    --warm-gray: #8C7B6B;
-    --gold: #D4A853;
-    --orange: #E8521A;
-  }
+/* ══════════════════════════════
+   BASE
+══════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --deep: #1C1208; --amber: #C8843A; --gold: #D4A853;
+  --cream: #FAF4E8; --warm-gray: #8C7B6B;
+  /* admin */
+  --abg: #0f0f0f; --acard: #1a1a1a; --aborder: #2a2a2a;
+  --awhite: #f0f0f0; --agray: #888; --alight: #ccc;
+  --ared: #e05252; --agreen: #52b788;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--deep); color: var(--cream); overflow-x: hidden; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+/* ══════════════════════════════
+   SCREENS — only one visible at a time
+══════════════════════════════ */
+.screen { display: none; }
+.screen.active { display: block; }
 
-  body {
-    background: var(--cream);
-    font-family: 'Jost', sans-serif;
-    color: var(--deep);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* ══════════════════════════════
+   LOADING
+══════════════════════════════ */
+#s-loading {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 1rem;
+  background: var(--deep);
+}
+.spinner {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 3px solid rgba(212,168,83,0.2);
+  border-top-color: var(--gold);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem; color: var(--amber);
+  letter-spacing: 0.2em; text-transform: uppercase;
+}
 
-  .page { display: none; min-height: 100vh; }
-  .page.active { display: block; animation: pageIn 0.4s ease; }
-  @keyframes pageIn {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+/* ══════════════════════════════
+   MENU — HOME
+══════════════════════════════ */
+#s-home {
+  font-family: 'Jost', sans-serif;
+  background: var(--deep); min-height: 100vh; position: relative; overflow: hidden;
+}
+.home-bg {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 50% at 50% 0%, #3d1f08 0%, transparent 70%),
+              radial-gradient(ellipse 60% 40% at 80% 80%, #2a1205 0%, transparent 60%);
+}
+.home-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(212,168,83,0.03) 0px, rgba(212,168,83,0.03) 1px, transparent 1px, transparent 40px),
+    repeating-linear-gradient(-45deg, rgba(212,168,83,0.03) 0px, rgba(212,168,83,0.03) 1px, transparent 1px, transparent 40px);
+  pointer-events: none;
+}
+.home-content {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 3.5rem 1.5rem 2rem; min-height: 100vh;
+}
+.logo-mark {
+  width: 72px; height: 72px; background: var(--amber); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; margin-bottom: 1.5rem;
+  box-shadow: 0 8px 32px rgba(200,132,58,0.4);
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+.home-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 3.2rem; font-weight: 700;
+  color: var(--gold); text-align: center; line-height: 1;
+}
+.home-subtitle {
+  font-size: 0.7rem; color: var(--amber); letter-spacing: 0.35em;
+  text-transform: uppercase; margin-top: 0.5rem; text-align: center;
+}
+.home-divider { display: flex; align-items: center; gap: 1rem; margin: 2rem 0; width: 100%; max-width: 280px; }
+.hdl { flex: 1; height: 1px; background: rgba(212,168,83,0.3); }
+.hds { color: var(--gold); font-size: 0.7rem; }
+.heritage-badge {
+  background: rgba(212,168,83,0.08); border: 1px solid rgba(212,168,83,0.2);
+  border-radius: 8px; padding: 1rem 1.5rem; text-align: center; max-width: 300px; margin-bottom: 2.5rem;
+}
+.heritage-badge .label { font-size: 0.6rem; color: var(--amber); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 0.3rem; }
+.heritage-badge .text { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1rem; color: var(--gold); line-height: 1.4; }
+.category-grid { width: 100%; max-width: 380px; display: flex; flex-direction: column; gap: 0.8rem; }
+.cat-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(212,168,83,0.15);
+  border-radius: 14px; padding: 1.1rem 1.3rem;
+  display: flex; align-items: center; gap: 1rem;
+  cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden;
+}
+.cat-card::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--amber); transform: scaleY(0); transition: transform 0.25s;
+  border-radius: 0 2px 2px 0;
+}
+.cat-card:active { transform: scale(0.98); background: rgba(212,168,83,0.08); }
+.cat-card:active::before { transform: scaleY(1); }
+.cat-icon { font-size: 1.8rem; flex-shrink: 0; width: 44px; height: 44px; background: rgba(200,132,58,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.cat-info { flex: 1; }
+.cat-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: #f0e0c0; line-height: 1; }
+.cat-desc { font-size: 0.7rem; color: var(--warm-gray); margin-top: 0.2rem; }
+.cat-count { font-size: 0.65rem; color: var(--amber); }
+.cat-arrow { color: rgba(212,168,83,0.4); font-size: 1rem; }
+.home-footer { margin-top: auto; padding-top: 2rem; text-align: center; color: rgba(140,123,107,0.5); font-size: 0.65rem; letter-spacing: 0.05em; }
+.admin-access-btn {
+  margin-top: 1.5rem; background: none; border: none;
+  color: rgba(140,123,107,0.2); font-size: 0.55rem;
+  letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer;
+  padding: 0.5rem;
+}
 
-    /* ══════════════════════════════
-     HOME PAGE
-  ══════════════════════════════ */
-  #home {
-    background: var(--deep);
-    position: relative;
-    overflow: hidden;
-  }
+/* ══════════════════════════════
+   MENU — CATEGORY PAGE
+══════════════════════════════ */
+#s-category { font-family: 'Jost', sans-serif; background: var(--cream); min-height: 100vh; }
+.page-header {
+  background: var(--deep); padding: 1rem 1.2rem;
+  border-bottom: 1px solid rgba(212,168,83,0.2); position: sticky; top: 0; z-index: 10;
+}
+.back-btn { font-size: 0.75rem; color: var(--amber); cursor: pointer; letter-spacing: 0.05em; margin-bottom: 0.3rem; display: inline-block; }
+.page-header-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: var(--gold); line-height: 1; }
+.page-header-sub { font-size: 0.65rem; color: var(--warm-gray); letter-spacing: 0.08em; margin-top: 0.15rem; }
+.size-legend { display: flex; gap: 0.5rem; padding: 0.8rem 1.2rem; background: rgba(28,18,8,0.05); border-bottom: 1px solid rgba(200,132,58,0.15); overflow-x: auto; scrollbar-width: none; }
+.size-legend::-webkit-scrollbar { display: none; }
+.size-pill { flex-shrink: 0; background: var(--deep); color: var(--amber); border-radius: 20px; padding: 0.28rem 0.7rem; font-size: 0.6rem; font-weight: 500; letter-spacing: 0.08em; white-space: nowrap; }
+.size-pill span { color: var(--warm-gray); margin-left: 0.2rem; }
+.items-list { padding: 1rem 1.1rem; }
+.dish-card { background: white; border-radius: 14px; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 2px 12px rgba(28,18,8,0.08); cursor: pointer; transition: transform 0.2s; animation: slideUp 0.3s ease both; }
+@keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.dish-card:active { transform: scale(0.99); }
+.dish-img { width: 100%; height: 200px; object-fit: cover; display: block; }
+.dish-img-placeholder { width: 100%; height: 160px; background: linear-gradient(135deg,#2a1a08,#3d2510); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; }
+.dish-img-placeholder .big-emoji { font-size: 3.5rem; }
+.dish-img-placeholder .placeholder-label { font-size: 0.65rem; color: rgba(200,132,58,0.5); letter-spacing: 0.1em; text-transform: uppercase; }
+.dish-card-body { padding: 1rem 1.2rem 1.2rem; }
+.dish-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.3rem; }
+.dish-card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--deep); line-height: 1.1; flex: 1; }
+.dish-badge { background: var(--amber); color: white; font-size: 0.55rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 3px; flex-shrink: 0; margin-left: 0.5rem; margin-top: 0.1rem; }
+.dish-card-tagline { font-size: 0.72rem; color: var(--warm-gray); margin-bottom: 0.8rem; line-height: 1.4; }
+.price-preview { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.8rem; }
+.price-chip-sm { background: #faf4e8; border: 1px solid rgba(200,132,58,0.2); border-radius: 8px; padding: 0.4rem 0.6rem; display: flex; align-items: center; gap: 0.5rem; min-width: 80px; }
+.ps-label { font-size: 0.6rem; font-weight: 600; color: var(--amber); text-transform: uppercase; letter-spacing: 0.06em; }
+.ps-serves { font-size: 0.55rem; color: var(--warm-gray); }
+.ps-amount { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--deep); }
+.ps-rupee { font-size: 0.75rem; color: var(--amber); }
+.view-detail-btn { font-size: 0.7rem; color: var(--amber); font-weight: 500; letter-spacing: 0.05em; text-align: right; }
+.powered-by { text-align: center; padding: 1.5rem; font-size: 0.62rem; color: rgba(140,123,107,0.5); letter-spacing: 0.1em; }
+.powered-by span { color: var(--amber); }
 
-  .home-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 80% 50% at 50% 0%, #3d1f08 0%, transparent 70%),
-      radial-gradient(ellipse 60% 40% at 80% 80%, #2a1205 0%, transparent 60%);
-  }
+/* ══════════════════════════════
+   MENU — DISH PAGE
+══════════════════════════════ */
+#s-dish { font-family: 'Jost', sans-serif; background: var(--cream); min-height: 100vh; }
+.dish-hero { position: relative; overflow: hidden; height: 300px; }
+#detail-hero-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dish-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom,transparent 30%,rgba(28,18,8,0.8) 100%); }
+.dish-hero-back { position: absolute; top: 1.2rem; left: 1.2rem; background: rgba(0,0,0,0.3); padding: 0.4rem 0.8rem; border-radius: 20px; cursor: pointer; font-size: 0.75rem; color: var(--amber); z-index: 2; }
+.dish-hero-badge-wrap { position: absolute; bottom: 1rem; right: 1rem; z-index: 2; background: var(--amber); color: white; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 3px; }
+.dish-detail-content { padding: 1.4rem 1.2rem; }
+.dish-detail-name { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 700; color: var(--deep); line-height: 1.1; margin-bottom: 0.2rem; }
+.dish-detail-arabic { font-size: 0.7rem; color: var(--warm-gray); letter-spacing: 0.08em; margin-bottom: 1rem; }
+.dish-detail-desc { font-size: 0.85rem; line-height: 1.7; color: #4a3728; margin-bottom: 1.5rem; }
+.section-label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--amber); margin-bottom: 0.7rem; }
+.pricing-section { margin-bottom: 1.5rem; }
+.pricing-grid { display: flex; flex-direction: column; gap: 0.6rem; }
+.price-card-vertical { background: white; border: 1px solid rgba(200,132,58,0.15); border-radius: 12px; padding: 0.9rem 1.1rem; display: flex; align-items: center; justify-content: space-between; }
+.pv-left { flex: 1; }
+.pv-size { font-size: 0.7rem; font-weight: 700; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; }
+.pv-serves { font-size: 0.75rem; font-weight: 600; color: var(--deep); margin-top: 0.1rem; }
+.pv-desc { font-size: 0.65rem; color: var(--warm-gray); margin-top: 0.1rem; }
+.pv-price { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 700; color: var(--deep); }
+.pv-rupee { font-size: 1rem; color: var(--amber); }
+.includes-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+.include-chip { background: rgba(200,132,58,0.1); border: 1px solid rgba(200,132,58,0.2); border-radius: 20px; padding: 0.3rem 0.7rem; font-size: 0.68rem; color: #5a3e2b; }
+.dish-notes { background: rgba(28,18,8,0.04); border-left: 3px solid var(--amber); border-radius: 0 8px 8px 0; padding: 0.9rem 1rem; font-size: 0.78rem; line-height: 1.6; color: #4a3728; margin-bottom: 2rem; }
 
-  .home-bg::after {
-    content: '';
-    position: absolute; inset: 0;
-    background-image:
-      repeating-linear-gradient(45deg, rgba(212,168,83,0.03) 0px, rgba(212,168,83,0.03) 1px, transparent 1px, transparent 40px),
-      repeating-linear-gradient(-45deg, rgba(212,168,83,0.03) 0px, rgba(212,168,83,0.03) 1px, transparent 1px, transparent 40px);
-    pointer-events: none;
-  }
+/* ══════════════════════════════
+   ADMIN — LOGIN
+══════════════════════════════ */
+#s-admin-login {
+  font-family: 'Inter', sans-serif;
+  background: var(--abg); min-height: 100vh;
+  display: flex; align-items: center; justify-content: center; padding: 2rem;
+}
+.login-card { background: var(--acard); border: 1px solid var(--aborder); border-radius: 16px; padding: 2.5rem 2rem; width: 100%; max-width: 360px; text-align: center; }
+.login-logo { font-size: 2.5rem; margin-bottom: 0.8rem; }
+.login-title { font-size: 1.3rem; font-weight: 700; color: var(--gold); margin-bottom: 0.3rem; }
+.login-sub { font-size: 0.78rem; color: var(--agray); margin-bottom: 2rem; }
+.login-back { font-size: 0.72rem; color: var(--agray); cursor: pointer; margin-bottom: 1.5rem; display: inline-block; }
+.login-back:hover { color: var(--amber); }
+.login-input { width: 100%; background: var(--abg); border: 1px solid var(--aborder); border-radius: 8px; padding: 0.8rem 1rem; color: var(--awhite); font-size: 0.9rem; font-family: 'Inter', sans-serif; margin-bottom: 1rem; outline: none; transition: border-color 0.2s; }
+.login-input:focus { border-color: var(--amber); }
+.login-btn { width: 100%; background: var(--amber); color: white; border: none; border-radius: 8px; padding: 0.85rem; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.login-btn:hover { background: var(--gold); }
+.login-error { color: var(--ared); font-size: 0.78rem; margin-top: 0.8rem; display: none; }
 
-  .home-content {
-    position: relative; z-index: 2;
-    display: flex; flex-direction: column;
-    align-items: center;
-    padding: 3.5rem 1.5rem 2rem;
-    min-height: 100vh;
-  }
+/* ══════════════════════════════
+   ADMIN — PANEL
+══════════════════════════════ */
+#s-admin {
+  font-family: 'Inter', sans-serif;
+  background: var(--abg); min-height: 100vh;
+}
+.top-bar { background: var(--acard); border-bottom: 1px solid var(--aborder); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+.top-bar-title { font-size: 1rem; font-weight: 700; color: var(--gold); }
+.top-bar-sub { font-size: 0.68rem; color: var(--agray); margin-top: 0.1rem; }
+.top-bar-right { display: flex; gap: 0.6rem; align-items: center; }
+.back-to-menu-btn { background: rgba(212,168,83,0.1); border: 1px solid rgba(212,168,83,0.3); color: var(--amber); padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.back-to-menu-btn:hover { background: rgba(212,168,83,0.2); }
+.logout-btn { background: transparent; border: 1px solid var(--aborder); color: var(--agray); padding: 0.4rem 0.9rem; border-radius: 6px; font-size: 0.72rem; cursor: pointer; transition: all 0.2s; }
+.logout-btn:hover { border-color: var(--ared); color: var(--ared); }
+.admin-body { padding: 1.5rem; max-width: 600px; margin: 0 auto; }
+.cat-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+.cat-tab { background: var(--acard); border: 1px solid var(--aborder); border-radius: 20px; padding: 0.4rem 1rem; font-size: 0.75rem; font-weight: 600; color: var(--agray); cursor: pointer; transition: all 0.2s; }
+.cat-tab.active { background: var(--amber); border-color: var(--amber); color: white; }
+.add-btn { width: 100%; background: transparent; border: 1px dashed var(--amber); border-radius: 10px; padding: 0.85rem; color: var(--amber); font-size: 0.82rem; font-weight: 600; cursor: pointer; margin-bottom: 1rem; transition: all 0.2s; }
+.add-btn:hover { background: rgba(200,132,58,0.08); }
+.dish-row { background: var(--acard); border: 1px solid var(--aborder); border-radius: 10px; padding: 1rem; margin-bottom: 0.7rem; display: flex; align-items: center; gap: 1rem; }
+.dish-row-thumb { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: #222; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; overflow: hidden; }
+.dish-row-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.dish-row-info { flex: 1; min-width: 0; }
+.dish-row-name { font-size: 0.88rem; font-weight: 600; color: var(--awhite); margin-bottom: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dish-row-badge { font-size: 0.6rem; color: var(--amber); }
+.dish-row-price { font-size: 0.72rem; color: var(--agray); margin-top: 0.1rem; }
+.dish-row-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.edit-btn, .del-btn { border: none; border-radius: 6px; padding: 0.4rem 0.7rem; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.edit-btn { background: rgba(200,132,58,0.15); color: var(--amber); }
+.edit-btn:hover { background: rgba(200,132,58,0.25); }
+.del-btn { background: rgba(224,82,82,0.12); color: var(--ared); }
+.del-btn:hover { background: rgba(224,82,82,0.22); }
+.loading-row { text-align: center; padding: 2rem; color: var(--agray); font-size: 0.85rem; }
 
-  .logo-mark {
-    width: 72px; height: 72px;
-    background: var(--amber);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 8px 32px rgba(200,132,58,0.4);
-    animation: float 3s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
+/* ══════════════════════════════
+   MODAL
+══════════════════════════════ */
+.modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(4px); }
+.modal-bg.open { display: flex; }
+.modal { background: var(--acard); border: 1px solid var(--aborder); border-radius: 20px 20px 0 0; padding: 1.5rem; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; animation: mslideUp 0.3s ease; }
+@keyframes mslideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-title { font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: 1.2rem; display: flex; align-items: center; justify-content: space-between; }
+.modal-close { background: none; border: none; color: var(--agray); font-size: 1.2rem; cursor: pointer; }
+.form-group { margin-bottom: 1rem; }
+.form-label { font-size: 0.7rem; font-weight: 600; color: var(--agray); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; display: block; }
+.form-input, .form-textarea { width: 100%; background: var(--abg); border: 1px solid var(--aborder); border-radius: 8px; padding: 0.7rem 0.9rem; color: var(--awhite); font-size: 0.85rem; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.2s; }
+.form-input:focus, .form-textarea:focus { border-color: var(--amber); }
+.form-textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+.price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+.save-btn { width: 100%; background: var(--amber); color: white; border: none; border-radius: 10px; padding: 0.9rem; font-size: 0.9rem; font-weight: 700; cursor: pointer; margin-top: 0.5rem; transition: all 0.2s; }
+.save-btn:hover { background: var(--gold); }
+.save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  .home-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 3.2rem; font-weight: 700;
-    color: var(--gold); text-align: center;
-    line-height: 1; letter-spacing: -0.01em;
-  }
-
-  .home-subtitle {
-    font-size: 0.7rem; color: var(--amber);
-    letter-spacing: 0.35em; text-transform: uppercase;
-    margin-top: 0.5rem; text-align: center;
-  }
-
-  .home-divider {
-    display: flex; align-items: center; gap: 1rem;
-    margin: 2rem 0; width: 100%; max-width: 280px;
-  }
-  .home-divider-line { flex: 1; height: 1px; background: rgba(212,168,83,0.3); }
-  .home-divider-star { color: var(--gold); font-size: 0.7rem; }
-
-  .heritage-badge {
-    background: rgba(212,168,83,0.08);
-    border: 1px solid rgba(212,168,83,0.2);
-    border-radius: 8px; padding: 1rem 1.5rem;
-    text-align: center; max-width: 300px; margin-bottom: 2.5rem;
-  }
-  .heritage-badge .label {
-    font-size: 0.6rem; color: var(--amber);
-    letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 0.3rem;
-  }
-  .heritage-badge .text {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic; font-size: 1rem;
-    color: var(--gold); line-height: 1.4;
-  }
-
-  .category-grid {
-    width: 100%; max-width: 380px;
-    display: flex; flex-direction: column; gap: 0.8rem;
-  }
-
-  .cat-card {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(212,168,83,0.15);
-    border-radius: 14px; padding: 1.1rem 1.3rem;
-    display: flex; align-items: center; gap: 1rem;
-    cursor: pointer; transition: all 0.25s ease;
-    position: relative; overflow: hidden;
-  }
-  .cat-card::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-    width: 3px; background: var(--amber);
-    transform: scaleY(0); transition: transform 0.25s;
-    border-radius: 0 2px 2px 0;
-  }
-  .cat-card:active { transform: scale(0.98); background: rgba(212,168,83,0.08); }
-  .cat-card:active::before { transform: scaleY(1); }
-
-  .cat-icon {
-    font-size: 1.8rem; flex-shrink: 0;
-    width: 44px; height: 44px;
-    background: rgba(200,132,58,0.12);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .cat-info { flex: 1; }
-  .cat-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.2rem; font-weight: 600;
-    color: #f0e0c0; line-height: 1;
-  }
-  .cat-desc { font-size: 0.7rem; color: var(--warm-gray); margin-top: 0.2rem; }
-  .cat-count { font-size: 0.65rem; color: var(--amber); }
-  .cat-arrow { color: rgba(212,168,83,0.4); font-size: 1rem; }
-
-  .home-footer {
-    margin-top: auto; padding-top: 2rem;
-    text-align: center;
-    color: rgba(140,123,107,0.5);
-    font-size: 0.65rem; letter-spacing: 0.05em;
-  }
-
-
-  /* ══════════════════════
-     CATEGORY PAGE
-  ══════════════════════ */
-  #category-page { background: var(--cream); }
-
-  .page-header {
-    background: var(--deep);
-    padding: 1.2rem 1.5rem 1.5rem;
-  }
-  .back-btn {
-    display: flex; align-items: center; gap: 0.4rem;
-    color: var(--amber); font-size: 0.75rem;
-    letter-spacing: 0.05em; cursor: pointer;
-    margin-bottom: 0.9rem; width: fit-content;
-  }
-  .page-header-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.1rem; color: var(--gold); font-weight: 700;
-  }
-  .page-header-sub {
-    font-size: 0.68rem; color: var(--warm-gray);
-    letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.2rem;
-  }
-
-  .size-legend {
-    display: flex; gap: 0.5rem;
-    padding: 0.8rem 1.4rem;
-    background: var(--sand);
-    border-bottom: 1px solid rgba(92,51,23,0.1);
-    overflow-x: auto; scrollbar-width: none;
-  }
-  .size-legend::-webkit-scrollbar { display: none; }
-  .size-pill {
-    flex-shrink: 0; font-size: 0.62rem;
-    letter-spacing: 0.04em; color: var(--brown);
-    background: white; border: 1px solid rgba(92,51,23,0.15);
-    border-radius: 20px; padding: 0.25rem 0.65rem;
-  }
-  .size-pill span { color: var(--amber); font-weight: 600; }
-
-  .items-list { padding: 1rem 1.1rem; }
-
-  /* DISH CARD */
-  .dish-card {
-    background: white;
-    border-radius: 18px;
-    margin-bottom: 1rem;
-    overflow: hidden;
-    box-shadow: 0 3px 14px rgba(28,18,8,0.08);
-    cursor: pointer;
-    border: 1px solid rgba(212,168,83,0.12);
-    animation: slideUp 0.35s ease both;
-    transition: transform 0.2s;
-  }
-  .dish-card:active { transform: scale(0.98); }
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .dish-card:nth-child(2) { animation-delay: 0.05s; }
-  .dish-card:nth-child(3) { animation-delay: 0.1s; }
-  .dish-card:nth-child(4) { animation-delay: 0.15s; }
-  .dish-card:nth-child(5) { animation-delay: 0.2s; }
-  .dish-card:nth-child(6) { animation-delay: 0.25s; }
-  .dish-card:nth-child(7) { animation-delay: 0.3s; }
-
-  /* FOOD IMAGE */
-  .dish-img {
-    width: 100%; height: 180px;
-    object-fit: cover;
-    display: block;
-    background: linear-gradient(135deg, #f5ddb0, #e8c87a);
-  }
-
-  .dish-img-placeholder {
-    width: 100%; height: 180px;
-    background: linear-gradient(135deg, #2a1508, #4a2510);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 0.5rem;
-  }
-  .dish-img-placeholder .big-emoji { font-size: 4rem; }
-  .dish-img-placeholder .placeholder-label {
-    font-size: 0.6rem; color: rgba(212,168,83,0.4);
-    letter-spacing: 0.15em; text-transform: uppercase;
-  }
-
-  .dish-card-body { padding: 1rem 1.2rem 1.2rem; }
-
-  .dish-card-top {
-    display: flex; justify-content: space-between;
-    align-items: flex-start; gap: 0.5rem;
-    margin-bottom: 0.4rem;
-  }
-  .dish-card-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.25rem; font-weight: 700;
-    color: var(--deep); line-height: 1.2; flex: 1;
-  }
-  .dish-badge {
-    font-size: 0.58rem; font-weight: 600;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    background: var(--orange); color: white;
-    padding: 0.2rem 0.55rem; border-radius: 20px;
-    flex-shrink: 0; margin-top: 0.1rem;
-  }
-  .dish-card-tagline {
-    font-size: 0.75rem; color: var(--warm-gray);
-    line-height: 1.5; margin-bottom: 0.8rem;
-  }
-
-  /* PRICE PREVIEW ROW */
-  .price-preview {
-    display: flex; gap: 0.4rem; flex-wrap: wrap;
-  }
-  .price-chip-sm {
-    font-size: 0.68rem; font-weight: 600;
-    background: #fdf4e3; color: var(--rust);
-    border: 1px solid rgba(168,75,42,0.15);
-    border-radius: 6px; padding: 0.2rem 0.5rem;
-  }
-
-  .view-detail-btn {
-    display: flex; align-items: center; justify-content: center;
-    gap: 0.4rem; margin-top: 1rem;
-    background: var(--deep); color: var(--gold);
-    border-radius: 10px; padding: 0.7rem;
-    font-size: 0.75rem; font-weight: 500;
-    letter-spacing: 0.08em; text-transform: uppercase;
-  }
-
-  /* ══════════════════════
-     DISH DETAIL
-  ══════════════════════ */
-  #dish-page { background: var(--deep); }
-
-  .dish-hero {
-    position: relative; overflow: hidden;
-    height: 320px;
-  }
-  .dish-hero img, .dish-hero-placeholder {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-  }
-  .dish-hero-placeholder {
-    background: linear-gradient(160deg, #2a1508, #1a0d04);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .dish-hero-placeholder .hero-emoji { font-size: 9rem; opacity: 0.2; }
-  .dish-hero-overlay {
-    position: absolute; inset: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 30%, var(--deep) 100%);
-  }
-  .dish-hero-back {
-    position: absolute; top: 1.2rem; left: 1.2rem;
-    background: rgba(0,0,0,0.4); backdrop-filter: blur(6px);
-    padding: 0.4rem 0.9rem; border-radius: 20px;
-    color: var(--amber); font-size: 0.75rem; cursor: pointer;
-  }
-  .dish-hero-badge-wrap {
-    position: absolute; top: 1.2rem; right: 1.2rem;
-    background: var(--orange); color: white;
-    font-size: 0.6rem; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 0.3rem 0.75rem; border-radius: 20px;
-  }
-
-  .dish-detail-body { padding: 0 1.5rem 3rem; margin-top: -1.5rem; position: relative; z-index: 2; }
-
-  .dish-detail-name {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.5rem; font-weight: 700;
-    color: var(--gold); line-height: 1.05; margin-bottom: 0.3rem;
-  }
-  .dish-detail-arabic {
-    font-size: 0.72rem; color: var(--amber);
-    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.2rem;
-  }
-  .dish-detail-desc {
-    font-size: 0.88rem; color: #c4ae94; line-height: 1.85;
-    margin-bottom: 2rem;
-    border-left: 2px solid var(--orange); padding-left: 1rem;
-  }
-
-  /* LARGE VERTICAL PRICING CARDS */
-  .pricing-section { margin-bottom: 2rem; }
-  .section-label {
-    font-size: 0.6rem; letter-spacing: 0.25em;
-    color: var(--amber); text-transform: uppercase; margin-bottom: 0.9rem;
-  }
-
-  .price-card-vertical {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(212,168,83,0.15);
-    border-radius: 14px;
-    padding: 1.2rem 1.5rem;
-    margin-bottom: 0.7rem;
-    display: flex; align-items: center;
-    gap: 1rem;
-    transition: background 0.2s;
-  }
-  .price-card-vertical:active { background: rgba(212,168,83,0.1); }
-
-  .pv-left { flex: 1; }
-  .pv-size {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.5rem; font-weight: 700;
-    color: white; line-height: 1;
-  }
-  .pv-serves {
-    font-size: 0.7rem; color: var(--warm-gray);
-    margin-top: 0.2rem; letter-spacing: 0.04em;
-  }
-  .pv-desc {
-    font-size: 0.65rem; color: rgba(140,123,107,0.6);
-    margin-top: 0.15rem;
-  }
-  .pv-price {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.2rem; font-weight: 700;
-    color: var(--gold); line-height: 1;
-  }
-  .pv-rupee { font-size: 1rem; vertical-align: top; line-height: 2; }
-
-  /* INCLUDES */
-  .includes-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 0.6rem; margin-bottom: 1.8rem;
-  }
-  .include-chip {
-    display: flex; align-items: center; gap: 0.5rem;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(212,168,83,0.1);
-    border-radius: 10px; padding: 0.65rem 0.9rem;
-    font-size: 0.74rem; color: #c4ae94;
-  }
-
-  /* NOTES */
-  .dish-notes {
-    background: rgba(232,82,26,0.07);
-    border: 1px solid rgba(232,82,26,0.2);
-    border-radius: 12px; padding: 1rem 1.2rem;
-    font-size: 0.76rem; color: #a08060; line-height: 1.75;
-  }
-  .dish-notes strong {
-    color: var(--amber); display: block;
-    margin-bottom: 0.3rem; font-size: 0.62rem;
-    letter-spacing: 0.1em; text-transform: uppercase;
-  }
-
-  .powered-by {
-    text-align: center; padding: 1.5rem;
-    font-size: 0.6rem; color: rgba(140,123,107,0.25);
-    letter-spacing: 0.08em;
-  }
-  .powered-by span { color: rgba(232,82,26,0.35); }
+/* TOAST */
+.toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%); background: var(--agreen); color: white; padding: 0.7rem 1.4rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; z-index: 200; opacity: 0; transition: opacity 0.3s; pointer-events: none; font-family: 'Inter', sans-serif; }
+.toast.err { background: var(--ared); }
+.toast.show { opacity: 1; }
 </style>
 </head>
 <body>
 
-<!-- ══════ HOME ══════ -->
-<div id="home" class="page active">
+<!-- ══ LOADING ══ -->
+<div id="s-loading" class="screen active">
+  <div class="spinner"></div>
+  <div class="loading-text">Loading Menu...</div>
+</div>
+
+<!-- ══ HOME ══ -->
+<div id="s-home" class="screen">
   <div class="home-bg"></div>
   <div class="home-content">
-
     <div class="logo-mark">☁️</div>
     <div class="home-title">Cloud 9</div>
     <div class="home-subtitle">Mandi &amp; Grills · Ottapalam</div>
-
-    <div class="home-divider">
-      <div class="home-divider-line"></div>
-      <div class="home-divider-star">✦</div>
-      <div class="home-divider-line"></div>
-    </div>
-
+    <div class="home-divider"><div class="hdl"></div><div class="hds">✦</div><div class="hdl"></div></div>
     <div class="heritage-badge">
       <div class="label">Our Legacy</div>
       <div class="text">"The first to bring authentic<br>Kuzhi Mandi to Kerala —<br>by Mandi Kaka"</div>
     </div>
-
     <div class="category-grid">
       <div class="cat-card" onclick="openCategory('mandi')">
         <div class="cat-icon">🫕</div>
-        <div class="cat-info">
-          <div class="cat-name">Mandi</div>
-          <div class="cat-desc">Slow pit-cooked rice &amp; meat</div>
-        </div>
-        <div class="cat-count">7 dishes</div>
+        <div class="cat-info"><div class="cat-name">Mandi</div><div class="cat-desc">Slow pit-cooked rice &amp; meat</div></div>
+        <div class="cat-count" id="count-mandi">7 dishes</div>
         <div class="cat-arrow">›</div>
       </div>
       <div class="cat-card" onclick="openCategory('alfaham')">
         <div class="cat-icon">🍗</div>
-        <div class="cat-info">
-          <div class="cat-name">Al Faham</div>
-          <div class="cat-desc">Arabian charcoal grilled chicken</div>
-        </div>
-        <div class="cat-count">5 dishes</div>
+        <div class="cat-info"><div class="cat-name">Al Faham</div><div class="cat-desc">Arabian charcoal grilled chicken</div></div>
+        <div class="cat-count" id="count-alfaham">5 dishes</div>
         <div class="cat-arrow">›</div>
       </div>
       <div class="cat-card" onclick="openCategory('extras')">
         <div class="cat-icon">🍚</div>
-        <div class="cat-info">
-          <div class="cat-name">Extras &amp; Sides</div>
-          <div class="cat-desc">Rice, kuboos, sauces</div>
-        </div>
-        <div class="cat-count">3 items</div>
+        <div class="cat-info"><div class="cat-name">Extras &amp; Sides</div><div class="cat-desc">Rice, kuboos, sauces</div></div>
+        <div class="cat-count" id="count-extras">3 items</div>
         <div class="cat-arrow">›</div>
       </div>
     </div>
-
     <div class="home-footer">
       All prices inclusive of GST · Order ready in 15–20 mins<br>
-      Unlimited rice based on portion size · Not available for takeaway
+      Unlimited rice with dine-in only · Not available for takeaway
     </div>
-
+    <button class="admin-access-btn" onclick="goAdminLogin()">manage</button>
   </div>
 </div>
 
-<!-- ══════ CATEGORY LIST ══════ -->
-<div id="category-page" class="page">
+<!-- ══ CATEGORY ══ -->
+<div id="s-category" class="screen">
   <div class="page-header">
     <div class="back-btn" onclick="goHome()">← Back to Menu</div>
     <div class="page-header-title" id="cat-title"></div>
@@ -495,226 +332,451 @@
     <div class="size-pill">¾ <span>3 pax</span></div>
     <div class="size-pill">Half <span>2 pax</span></div>
     <div class="size-pill">Qtr <span>1 pax</span></div>
-    <div class="size-pill">Unlimited rice · dine-in only</div>
+    <div class="size-pill">Unlimited rice dine-in</div>
   </div>
   <div class="items-list" id="items-list"></div>
-  <div class="powered-by">Digital menu by <span>▲ TechGrid Agency</span></div>
+  <div class="powered-by">Digital menu by <span>▲ NovaByte</span></div>
 </div>
 
-<!-- ══════ DISH DETAIL ══════ -->
-<div id="dish-page" class="page">
-  <div class="dish-hero" id="detail-hero">
-    <img id="detail-hero-img" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+<!-- ══ DISH ══ -->
+<div id="s-dish" class="screen">
+  <div class="dish-hero">
+    <img id="detail-hero-img" src="" alt="">
     <div class="dish-hero-overlay"></div>
     <div class="dish-hero-back" onclick="goBack()">← Back</div>
     <div class="dish-hero-badge-wrap" id="detail-badge"></div>
   </div>
-
-  <div class="dish-detail-body">
+  <div class="dish-detail-content">
     <div class="dish-detail-name" id="detail-name"></div>
     <div class="dish-detail-arabic" id="detail-arabic"></div>
     <div class="dish-detail-desc" id="detail-desc"></div>
-
     <div class="pricing-section">
       <div class="section-label">Choose Your Portion</div>
-      <div id="detail-pricing"></div>
+      <div class="pricing-grid" id="detail-pricing"></div>
     </div>
-
-    <div style="margin-bottom:1.8rem;">
+    <div style="margin-bottom:1.5rem">
       <div class="section-label">What's Served With It</div>
       <div class="includes-grid" id="detail-includes"></div>
     </div>
-
     <div class="dish-notes" id="detail-notes"></div>
   </div>
-  <div class="powered-by">Digital menu by <span>▲ TechGrid Agency</span></div>
+  <div class="powered-by">Digital menu by <span>▲ NovaByte</span></div>
 </div>
 
-<script>
-const SERVING = { full:'4 people', '3/4':'3 people', half:'2 people', qtr:'1 person', portion:'per portion', piece:'per piece' };
-const SERVING_DESC = { full:'Best for a full table', '3/4':'Perfect for a group of 3', half:'Ideal for two', qtr:'Solo portion', portion:'Add-on', piece:'Individual' };
+<!-- ══ ADMIN LOGIN ══ -->
+<div id="s-admin-login" class="screen">
+  <div class="login-card">
+    <div class="login-logo">☁️</div>
+    <div class="login-title">Cloud 9 Admin</div>
+    <div class="login-sub">Menu Management Panel</div>
+    <span class="login-back" onclick="goHome()">← Back to Menu</span>
+    <input type="password" class="login-input" id="pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-error">Incorrect password. Try again.</div>
+  </div>
+</div>
 
-const MENU = {
-  mandi: {
-    title: 'Mandi',
-    subtitle: 'Slow pit-cooked Arabian rice & meat',
-    items: [
-      { id:'chicken-mandi', name:'Chicken Mandi', arabic:'مندي دجاج · Pit Cooked', emoji:'🍖', img:'https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=800&q=80', badge:'Our Classic', tagline:'The dish that started it all — slow-cooked in an underground pit', desc:'Our signature Chicken Mandi follows the authentic Yemeni tradition — whole chicken marinated in a secret blend of hawaj spices, slow-cooked 2–3 hours underground over tamarind-wood embers. The chicken rests above fragrant basmati rice so every drop of natural fat and flavour drips down. No added oil. No ghee. Just pure, clean, smoky depth.', prices:{full:680,'3/4':520,half:350,qtr:180}, includes:['🍚 Mandi Rice','🍅 Tomato Chutney','🥗 Cabbage Salad','🫙 Mayonnaise'], notes:'<strong>Portion Sizes</strong>Quarter: 1 person · Half: 2 people · ¾: 3 people · Full: 4 people. Unlimited rice with dine-in only.' },
-      { id:'beef-mandi', name:'Beef Mandi', arabic:'مندي لحم · Slow Pit Roasted', emoji:'🥩', img:'https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80', badge:'Bold & Rich', tagline:'Tender slow-roasted beef with deep smoky flavour', desc:'Tender beef cuts marinated overnight in aromatic spice pastes, pit-roasted for hours until the meat falls away from the bone. The beef fat renders slowly into the basmati rice below, creating an intensely rich, smoky grain that is deeply satisfying. A heavier, bolder choice for those who want full Arabian flavour.', prices:{full:940,'3/4':720,half:480,qtr:250}, includes:['🍚 Mandi Rice','🍅 Tomato Chutney','🥗 Cabbage Salad','🫙 Mayonnaise'], notes:'<strong>Chef\'s Note</strong>Beef Mandi has a richer, heavier flavour profile than chicken. Best shared between 2+ people.' },
-      { id:'peri-peri-mandi', name:'Peri Peri Mandi', arabic:'مندي بيري بيري · Fiery Spiced', emoji:'🌶️', img:'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=800&q=80', badge:'Spicy', tagline:'Classic Mandi elevated with bold African bird\'s eye chilli', desc:'Our classic pit-cooked Mandi transformed with an African peri peri marinade — bird\'s eye chilli, black pepper, dried red chilli, and herbs blended into the chicken before it descends into the pit. The result is the same clean, oil-free smoke of traditional Mandi, but with a slow-building heat that lingers on the palate.', prices:{full:860,'3/4':650,half:440,qtr:230}, includes:['🍚 Mandi Rice','🍅 Tomato Chutney','🥗 Cabbage Salad','🫙 Mayonnaise'], notes:'<strong>Spice Level</strong>Moderately spicy. Ask staff to reduce peri peri if you prefer milder.' },
-      { id:'honey-chilly-alfaham-mandi', name:'Honey Chilly Alfaham Mandi', arabic:'مندي الفحم بالعسل · Sweet & Spicy', emoji:'🍯', img:'https://images.unsplash.com/photo-1598514982901-5f05dbbe4e80?w=800&q=80', badge:'Fan Favourite', tagline:'Sweet honey glaze, charcoal smoke, and a kick of chilli', desc:'A showstopper dish. Al Faham charcoal-grilled chicken is brushed with a sticky honey-chilli glaze, then served atop our authentic pit-cooked Mandi rice. You get the smokiness of the grill, the slow warmth of Mandi spices, and the sweet-heat contrast of the honey chilli all in one plate.', prices:{full:860,'3/4':650,half:440,qtr:230}, includes:['🍚 Mandi Rice','🍅 Tomato Chutney','🥗 Cabbage Salad','🫙 Mayonnaise'], notes:'<strong>What Makes This Special</strong>Combines pit-cooking and charcoal grilling in one dish — a unique Cloud 9 creation.' },
-      { id:'normal-alfaham-mandi', name:'Normal Alfaham Mandi', arabic:'مندي الفحم العادي · Classic Grilled', emoji:'🔥', img:'https://images.unsplash.com/photo-1527477396000-e27163b481c2?w=800&q=80', badge:'Classic', tagline:'Charcoal Al Faham chicken on a bed of aromatic Mandi rice', desc:'The straightforward union of two Arabian classics. Al Faham chicken — rubbed in traditional Arabian spice blend, grilled over live charcoal — served on our slow pit-cooked Mandi rice. The chicken is golden, crisp-skinned, and lightly smoky. The rice is clean, subtly spiced, and fragrant.', prices:{full:800,'3/4':610,half:410,qtr:210}, includes:['🍚 Mandi Rice','🍅 Tomato Chutney','🥗 Cabbage Salad','🫙 Mayonnaise'], notes:'<strong>Best For</strong>First-timers to Mandi who want a familiar grilled chicken flavour alongside the signature rice.' },
-      { id:'shawaya-mandi', name:'Shawaya Mandi', arabic:'مندي شواية · Open Flame Grilled', emoji:'🍢', img:'https://images.unsplash.com/photo-1519984388953-d2406bc725e1?w=800&q=80', badge:'Signature', tagline:'Open-flame rotisserie chicken with our legendary pit rice', desc:'Shawaya is the ancient Arabian method of open-flame rotisserie cooking — whole chicken slowly rotated above open fire, basted repeatedly in spiced butter and herbs until the skin caramelises into a deep mahogany. Placed atop our pit-cooked Mandi rice, the drippings meld into the grains. A dish that has people driving 30km just to taste it.', prices:{full:860,'3/4':650,half:440,qtr:230}, includes:['🍚 Mandi Rice','🍅 Tomato Chutney','🥗 Cabbage Salad','🫙 Mayonnaise'], notes:'<strong>Why People Drive Far For This</strong>Shawaya Mandi is rare in Kerala. Cloud 9 was among the first to bring this to the region.' },
-      { id:'cloud9-special-alfaham-mandi', name:'Cloud 9 Special Alfaham Mandi', arabic:'المندي الخاص · Chef\'s Special', emoji:'⭐', img:'https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=800&q=80', badge:'Chef\'s Special', tagline:'A secret recipe that no one has been able to replicate', desc:'This is the dish the chef doesn\'t explain. The Cloud 9 Special uses a proprietary spice blend developed and refined over years by Mandi Kaka himself. The result is a depth of flavour that no two competing restaurants have been able to replicate. Order it once and you\'ll understand why people come back.', prices:{full:860,'3/4':650,half:440,qtr:230}, includes:['🍚 Mandi Rice','🍅 Tomato Chutney','🥗 Cabbage Salad','🫙 Mayonnaise'], notes:'<strong>The One to Order</strong>If you\'ve never been here before, this is the dish that will define Cloud 9 for you.' },
-    ]
-  },
-  alfaham: {
-    title: 'Al Faham',
-    subtitle: 'Arabian charcoal-grilled chicken',
-    items: [
-      { id:'chicken-meat-only', name:'Chicken — Meat Only', arabic:'دجاج فحم · Pure Grill', emoji:'🍗', img:'https://images.unsplash.com/photo-1532550907401-a500c9a57435?w=800&q=80', badge:'Grill Only', tagline:'Just the charcoal chicken — for those who know what they want', desc:'Al Faham chicken rubbed in a classic Arabian spice blend of sumac, cumin, black pepper, and herbs, then grilled over live charcoal until deeply golden. No rice. No frills. Ideal if you\'re adding Mandi rice separately or want to taste the chicken in its purest form.', prices:{full:440,'3/4':340,half:230,qtr:120}, includes:['🍅 Tomato Chutney','🫙 Mayonnaise','🥗 Salad'], notes:'<strong>Add Rice?</strong>Mandi Rice (Qtr) available for ₹110 extra. Kuboos at ₹10.' },
-      { id:'normal-alfaham', name:'Normal Alfaham', arabic:'الفحم العادي · Classic', emoji:'🔥', img:'https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&q=80', badge:'Classic', tagline:'Traditional Arabian charcoal-grilled chicken with rice', desc:'The Al Faham you know and love. Chicken marinated in the classic Arabian blend — garlic, ginger, cumin, coriander, and dried lime — then grilled over charcoal until the skin is crisp and golden. Served alongside fragrant rice. Clean flavours, satisfying texture, and that unmistakable charcoal smoke.', prices:{full:590,'3/4':450,half:300,qtr:150}, includes:['🍚 Rice','🍅 Tomato Chutney','🫙 Mayonnaise','🥗 Salad'], notes:'<strong>Good To Know</strong>Normal Alfaham is the benchmark. If you\'re new to Al Faham cuisine, start here.' },
-      { id:'peri-peri-alfaham', name:'Peri Peri Alfaham', arabic:'الفحم بيري بيري · Fiery', emoji:'🌶️', img:'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800&q=80', badge:'Spicy', tagline:'Charcoal chicken with intense peri peri heat', desc:'Al Faham chicken coated in a fiery peri peri marinade before hitting the charcoal grill. Dried red chilli, bird\'s eye chilli, black pepper, and green chilli are blended into the marinade. The charcoal grill chars and caramelises the spicy coating, adding smoky sweetness to balance the fire.', prices:{full:600,'3/4':460,half:310,qtr:160}, includes:['🍚 Rice','🍅 Tomato Chutney','🫙 Mayonnaise','🥗 Salad'], notes:'<strong>Spice Warning</strong>Genuinely spicy. If heat-sensitive, opt for Normal Alfaham instead.' },
-      { id:'honey-chilly-alfaham', name:'Honey Chilly Alfaham', arabic:'الفحم بالعسل · Sweet & Hot', emoji:'🍯', img:'https://images.unsplash.com/photo-1585325701956-60dd9c8553bc?w=800&q=80', badge:'Most Ordered', tagline:'The crowd-pleaser — sweet honey glaze with a chilli kick', desc:'Our most reordered Alfaham dish. Charcoal-grilled chicken glazed with our house honey-chilli sauce — natural honey sweetness balancing the heat of green chillies. The glaze caramelises on the grill creating a sticky, golden, slightly charred skin that is completely addictive.', prices:{full:600,'3/4':460,half:310,qtr:160}, includes:['🍚 Rice','🍅 Tomato Chutney','🫙 Mayonnaise','🥗 Salad'], notes:'<strong>Why It\'s The Most Ordered</strong>Sweet-spicy balance appeals to everyone. Great for mixed groups.' },
-      { id:'cloud9-special-alfaham', name:'Cloud 9 Special Alfaham', arabic:'الفحم الخاص · Signature', emoji:'⭐', img:'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=800&q=80', badge:'Chef\'s Special', tagline:'Mandi Kaka\'s personal recipe — never shared, never replicated', desc:'Developed and perfected over years by Mandi Kaka — the pioneer of Kuzhi Mandi in Kerala. The marinade is a proprietary blend that is never disclosed. Those who\'ve tried it describe notes of toasted spice, mild sweetness, and a deep charcoal smokiness unlike any other Alfaham in the region.', prices:{full:590,'3/4':450,half:300,qtr:150}, includes:['🍚 Rice','🍅 Tomato Chutney','🫙 Mayonnaise','🥗 Salad'], notes:'<strong>The Legend</strong>Cloud 9\'s owner — known as Mandi Kaka — pioneered Kuzhi Mandi in Kerala. This is his personal recipe.' },
-    ]
-  },
-  extras: {
-    title: 'Extras & Sides',
-    subtitle: 'Add on to complete your meal',
-    items: [
-      { id:'mandi-rice', name:'Mandi Rice', arabic:'أرز المندي · Quarter', emoji:'🍚', img:'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&q=80', badge:'Add-on', tagline:'Our fragrant pit-cooked rice — available separately', desc:'The same slow-cooked basmati that absorbs smoky drippings from our pit. Infused with whole spices — clove, cinnamon, cardamom, dried black lemon — cooked in meat stock. Available separately to add extra rice alongside chicken-only Alfaham.', prices:{qtr:110}, includes:['🧂 Served plain','🍽️ Pairs with any main'], notes:'<strong>Note</strong>Available per quarter only as add-on. Full rice included with all Mandi and Alfaham mains.' },
-      { id:'mayo-extra', name:'Mayo Extra', arabic:'مايونيز إضافي', emoji:'🫙', img:'https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=800&q=80', badge:'Side', tagline:'House mayonnaise — the essential pairing', desc:'Our house-made mayonnaise, creamy and mildly tangy. The perfect accompaniment to any grilled chicken or Mandi rice. A classic pairing at every Cloud 9 table.', prices:{portion:10}, includes:['🍽️ Served as side'], notes:'<strong>Tip</strong>Mix a spoon of mayo into your Mandi rice for a completely different flavour experience.' },
-      { id:'kuboos', name:'Kuboos', arabic:'خبز عربي · Arabic Flatbread', emoji:'🫓', img:'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=800&q=80', badge:'Bread', tagline:'Soft Arabic flatbread — the traditional side', desc:'Soft, thin Arabic flatbread — warm, pillowy, and lightly charred at the edges. Used throughout the Arab world to scoop up rice, tear alongside curry, or eat simply with mayonnaise.', prices:{piece:10}, includes:['🍽️ Served warm'], notes:'<strong>How to Eat It</strong>Tear a piece, scoop up Mandi rice and chicken, eat together. That\'s the authentic way.' },
-    ]
-  }
+<!-- ══ ADMIN PANEL ══ -->
+<div id="s-admin" class="screen">
+  <div class="top-bar">
+    <div>
+      <div class="top-bar-title">☁️ Cloud 9 Admin</div>
+      <div class="top-bar-sub">Edit dishes, prices and images</div>
+    </div>
+    <div class="top-bar-right">
+      <button class="back-to-menu-btn" onclick="goHome()">View Menu</button>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <div class="cat-tabs">
+      <div class="cat-tab active" onclick="switchCat('mandi',this)">Mandi</div>
+      <div class="cat-tab" onclick="switchCat('alfaham',this)">Al Faham</div>
+      <div class="cat-tab" onclick="switchCat('extras',this)">Extras</div>
+    </div>
+    <button class="add-btn" onclick="openAddModal()">+ Add New Dish</button>
+    <div id="dish-list"><div class="loading-row">Loading...</div></div>
+  </div>
+</div>
+
+<!-- ══ EDIT MODAL ══ -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modal-title-text">Edit Dish</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <input type="hidden" id="edit-id">
+    <input type="hidden" id="edit-cat">
+    <div class="form-group"><label class="form-label">Dish Name *</label><input type="text" class="form-input" id="edit-name" placeholder="e.g. Chicken Mandi"></div>
+    <div class="form-group"><label class="form-label">Arabic Subtitle</label><input type="text" class="form-input" id="edit-arabic" placeholder="e.g. مندي دجاج · Pit Cooked"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Badge</label><input type="text" class="form-input" id="edit-badge" placeholder="e.g. Chef's Special"></div>
+      <div class="form-group"><label class="form-label">Sort Order</label><input type="number" class="form-input" id="edit-sort" placeholder="1"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Tagline</label><input type="text" class="form-input" id="edit-tagline" placeholder="Short description for the card"></div>
+    <div class="form-group"><label class="form-label">Full Description</label><textarea class="form-textarea" id="edit-desc" placeholder="Detailed description..."></textarea></div>
+    <div class="form-group"><label class="form-label">Photo URL</label><input type="text" class="form-input" id="edit-img" placeholder="https://i.imgur.com/... (leave blank for placeholder)"></div>
+    <div class="form-group">
+      <label class="form-label">Prices (leave blank if not applicable)</label>
+      <div class="price-grid">
+        <div><label class="form-label" style="font-size:.6rem">Full (4 pax)</label><input type="number" class="form-input" id="p-full" placeholder="680"></div>
+        <div><label class="form-label" style="font-size:.6rem">3/4 (3 pax)</label><input type="number" class="form-input" id="p-3-4" placeholder="520"></div>
+        <div><label class="form-label" style="font-size:.6rem">Half (2 pax)</label><input type="number" class="form-input" id="p-half" placeholder="350"></div>
+        <div><label class="form-label" style="font-size:.6rem">Quarter (1 pax)</label><input type="number" class="form-input" id="p-qtr" placeholder="180"></div>
+        <div><label class="form-label" style="font-size:.6rem">Portion</label><input type="number" class="form-input" id="p-portion" placeholder="10"></div>
+        <div><label class="form-label" style="font-size:.6rem">Per Piece</label><input type="number" class="form-input" id="p-piece" placeholder="10"></div>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Includes (comma separated)</label><input type="text" class="form-input" id="edit-includes" placeholder="Mandi Rice, Tomato Chutney, Salad"></div>
+    <div class="form-group"><label class="form-label">Chef's Note</label><textarea class="form-textarea" id="edit-notes" style="min-height:60px" placeholder="Tip shown at bottom of dish page"></textarea></div>
+    <button class="save-btn" id="save-btn" onclick="saveDish()">Save Changes</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════
+// CONFIG
+// ══════════════════════════════
+const SB_URL = 'https://obwucgsrclggdljtfvux.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9id3VjZ3NyY2xnZ2RsanRmdnV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwODIxMTYsImV4cCI6MjA4OTY1ODExNn0.toeTpmDDz1Cr4FKR5Lox7KV43JVnnyiYF6FWk-eMyes';
+const ADMIN_PW = 'cloud9admin';
+
+const SERVING = { full:'4 people','3/4':'3 people',half:'2 people',qtr:'1 person',portion:'Per portion',piece:'Per piece' };
+const SERVING_DESC = { full:'Best for a full table','3/4':'Perfect for a group of 3',half:'Ideal for two',qtr:'Solo portion',portion:'Add-on',piece:'Individual' };
+const CAT_META = {
+  mandi: { title:'Mandi', subtitle:'Slow pit-cooked Arabian rice & meat' },
+  alfaham: { title:'Al Faham', subtitle:'Arabian charcoal-grilled chicken' },
+  extras: { title:'Extras & Sides', subtitle:'Add on to complete your meal' }
 };
 
-let currentCategory = null;
+let MENU = {};
+let currentCat = null;
+let adminCat = 'mandi';
+let allItems = [];
 
-// ── NAVIGATION WITH BROWSER HISTORY ──
-
-// showPage: switches visible page AND pushes a history state
-// so the browser back button knows where to go
-function showPage(id, state, pushHistory = true) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+// ══════════════════════════════
+// SCREEN ROUTING
+// ══════════════════════════════
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-  if (pushHistory) {
-    // Push the current page + any extra state (category, dish) into browser history
-    history.pushState({ page: id, ...state }, '', '');
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════════════
+// LOAD DATA
+// ══════════════════════════════
+async function loadMenu() {
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/menu_items?active=eq.true&order=sort_order.asc`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${SB_KEY}` }
+    });
+    const items = await res.json();
+    MENU = {};
+    allItems = items;
+    items.forEach(item => {
+      if (!MENU[item.category]) MENU[item.category] = [];
+      MENU[item.category].push(item);
+    });
+    ['mandi','alfaham','extras'].forEach(cat => {
+      const el = document.getElementById(`count-${cat}`);
+      const n = MENU[cat]?.length || 0;
+      if (el) el.textContent = n + (cat === 'extras' ? ' items' : ' dishes');
+    });
+    show('s-home');
+  } catch(e) {
+    document.getElementById('s-loading').innerHTML = '<div style="color:#C8843A;text-align:center;padding:3rem;font-family:Jost,sans-serif;font-size:0.9rem">Could not load menu.<br>Check your internet connection.</div>';
   }
 }
 
-// goHome: goes to home page
-function goHome() { showPage('home', {}); }
-
-// goBack: goes from dish → category, or category → home
+// ══════════════════════════════
+// MENU NAVIGATION
+// ══════════════════════════════
+function goHome() {
+  show('s-home');
+  history.pushState({ s:'home' }, '', '');
+}
 function goBack() {
-  if (currentCategory) openCategory(currentCategory);
+  if (currentCat) { _renderCategory(currentCat); show('s-category'); history.pushState({ s:'cat', catId: currentCat }, '', ''); }
   else goHome();
 }
+function goAdminLogin() { show('s-admin-login'); }
 
-// popstate: fires when user presses the browser back button OR does a back gesture
-// Reads the saved state and restores the correct internal page
-window.onpopstate = function(e) {
-  if (!e.state) {
-    // No state = they've gone all the way back, let browser exit naturally
-    return;
-  }
-  const { page, catId, dishId } = e.state;
-
-  if (page === 'home') {
-    showPage('home', {}, false);               // false = don't push again
-  } else if (page === 'category-page' && catId) {
-    currentCategory = catId;
-    _renderCategory(catId);                    // re-render without pushing
-    showPage('category-page', {}, false);
-  } else if (page === 'dish-page' && catId && dishId) {
-    currentCategory = catId;
-    _renderDish(catId, dishId);               // re-render without pushing
-    showPage('dish-page', {}, false);
-  }
+window.onpopstate = e => {
+  if (!e.state) return;
+  if (e.state.s === 'home') show('s-home');
+  else if (e.state.s === 'cat') { currentCat = e.state.catId; _renderCategory(e.state.catId); show('s-category'); }
+  else if (e.state.s === 'dish') { currentCat = e.state.catId; _renderDish(e.state.catId, e.state.dishId); show('s-dish'); }
 };
+history.replaceState({ s:'home' }, '', '');
 
-// Push the initial home state so the very first back press
-// goes to home instead of exiting immediately
-history.replaceState({ page: 'home' }, '', '');
-
-// ── SWIPE RIGHT TO GO BACK ──
+// Swipe right
 (function() {
-  let startX = 0, startY = 0;
-  document.addEventListener('touchstart', e => {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-  }, { passive: true });
-  document.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - startX;
-    const dy = e.changedTouches[0].clientY - startY;
-    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2 && dx > 0) {
-      history.back(); // triggers onpopstate — single source of truth
-    }
-  }, { passive: true });
+  let sx=0,sy=0;
+  document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+  document.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>80&&Math.abs(dx)>Math.abs(dy)*2&&dx>0)history.back();
+  },{passive:true});
 })();
 
-// _renderCategory: pure render, no history push (used by both openCategory and popstate)
+function getPrices(item) {
+  const p={};
+  if(item.price_full!=null)p.full=item.price_full;
+  if(item.price_3_4!=null)p['3/4']=item.price_3_4;
+  if(item.price_half!=null)p.half=item.price_half;
+  if(item.price_qtr!=null)p.qtr=item.price_qtr;
+  if(item.price_portion!=null)p.portion=item.price_portion;
+  if(item.price_piece!=null)p.piece=item.price_piece;
+  return p;
+}
+
 function _renderCategory(catId) {
-  const cat = MENU[catId];
-  document.getElementById('cat-title').textContent = cat.title;
-  document.getElementById('cat-sub').textContent = cat.subtitle;
+  const meta = CAT_META[catId]||{title:catId,subtitle:''};
+  document.getElementById('cat-title').textContent = meta.title;
+  document.getElementById('cat-sub').textContent = meta.subtitle;
   const list = document.getElementById('items-list');
   list.innerHTML = '';
-  const servesMap = { full:'4 people', '3/4':'3 people', half:'2 people', qtr:'1 person', portion:'per portion', piece:'per piece' };
-  cat.items.forEach(item => {
-    const priceHtml = Object.entries(item.prices).map(([s,p]) =>
-      `<div class="price-chip-sm">
-        <div><div class="ps-label">${s.toUpperCase()}</div><div class="ps-serves">${servesMap[s]||''}</div></div>
+  (MENU[catId]||[]).forEach((item,i) => {
+    const prices = getPrices(item);
+    const priceHtml = Object.entries(prices).map(([s,p])=>`
+      <div class="price-chip-sm">
+        <div><div class="ps-label">${s.toUpperCase()}</div><div class="ps-serves">${SERVING[s]||''}</div></div>
         <div class="ps-amount"><span class="ps-rupee">₹</span>${p}</div>
-      </div>`
-    ).join('');
+      </div>`).join('');
     const imgHtml = item.img
       ? `<img class="dish-img" src="${item.img}" alt="${item.name}">`
-      : `<div class="dish-img-placeholder"><div class="big-emoji">${item.emoji}</div><div class="placeholder-label">Photo coming soon</div></div>`;
+      : `<div class="dish-img-placeholder"><div class="big-emoji">🍽️</div><div class="placeholder-label">Photo coming soon</div></div>`;
     const card = document.createElement('div');
-    card.className = 'dish-card';
-    card.innerHTML = `
-      ${imgHtml}
-      <div class="dish-card-body">
-        <div class="dish-card-top">
-          <div class="dish-card-name">${item.name}</div>
-          <div class="dish-badge">${item.badge}</div>
-        </div>
-        <div class="dish-card-tagline">${item.tagline}</div>
-        <div class="price-preview">${priceHtml}</div>
-        <div class="view-detail-btn">View Full Details →</div>
-      </div>
-    `;
-    card.onclick = () => openDish(catId, item.id);
+    card.className='dish-card';
+    card.style.animationDelay=(i*0.05)+'s';
+    card.innerHTML=`${imgHtml}<div class="dish-card-body">
+      <div class="dish-card-top"><div class="dish-card-name">${item.name}</div><div class="dish-badge">${item.badge||''}</div></div>
+      <div class="dish-card-tagline">${item.tagline||''}</div>
+      <div class="price-preview">${priceHtml}</div>
+      <div class="view-detail-btn">View Full Details →</div>
+    </div>`;
+    card.onclick=()=>openDish(catId,item.id);
     list.appendChild(card);
   });
 }
-
-// openCategory: renders + pushes history state
 function openCategory(catId) {
-  currentCategory = catId;
+  currentCat=catId;
   _renderCategory(catId);
-  showPage('category-page', { catId });
+  show('s-category');
+  history.pushState({s:'cat',catId},{page:'s-category',catId},'');
 }
 
-// _renderDish: pure render, no history push
-function _renderDish(catId, dishId) {
-  const item = MENU[catId].items.find(i => i.id === dishId);
-  if (!item) return;
-  const heroImg = document.getElementById('detail-hero-img');
-  heroImg.src = item.img || '';
-  heroImg.alt = item.name;
-  document.getElementById('detail-badge').textContent = item.badge;
-  document.getElementById('detail-name').textContent = item.name;
-  document.getElementById('detail-arabic').textContent = item.arabic;
-  document.getElementById('detail-desc').textContent = item.desc;
-  const pricingEl = document.getElementById('detail-pricing');
-  pricingEl.innerHTML = Object.entries(item.prices).map(([size, price]) => `
+function _renderDish(catId,dishId) {
+  const item=(MENU[catId]||[]).find(i=>i.id===dishId);
+  if(!item)return;
+  const heroImg=document.getElementById('detail-hero-img');
+  heroImg.src=item.img||''; heroImg.alt=item.name;
+  heroImg.style.display=item.img?'block':'none';
+  document.getElementById('detail-badge').textContent=item.badge||'';
+  document.getElementById('detail-name').textContent=item.name;
+  document.getElementById('detail-arabic').textContent=item.arabic||'';
+  document.getElementById('detail-desc').textContent=item.description||'';
+  const prices=getPrices(item);
+  document.getElementById('detail-pricing').innerHTML=Object.entries(prices).map(([size,price])=>`
     <div class="price-card-vertical">
       <div class="pv-left">
         <div class="pv-size">${size.toUpperCase()}</div>
-        <div class="pv-serves">${SERVING[size] || ''}</div>
-        <div class="pv-desc">${SERVING_DESC[size] || ''}</div>
+        <div class="pv-serves">${SERVING[size]||''}</div>
+        <div class="pv-desc">${SERVING_DESC[size]||''}</div>
       </div>
       <div class="pv-price"><span class="pv-rupee">₹</span>${price}</div>
-    </div>
-  `).join('');
-  document.getElementById('detail-includes').innerHTML = item.includes.map(inc => `
-    <div class="include-chip">${inc}</div>
-  `).join('');
-  document.getElementById('detail-notes').innerHTML = item.notes;
+    </div>`).join('');
+  const inc=item.includes?item.includes.split(',').map(s=>s.trim()):[];
+  document.getElementById('detail-includes').innerHTML=inc.map(i=>`<div class="include-chip">${i}</div>`).join('');
+  document.getElementById('detail-notes').textContent=item.notes||'';
+}
+function openDish(catId,dishId) {
+  currentCat=catId;
+  _renderDish(catId,dishId);
+  show('s-dish');
+  history.pushState({s:'dish',catId,dishId},'','');
 }
 
-// openDish: renders + pushes history state
-function openDish(catId, dishId) {
-  currentCategory = catId;
-  _renderDish(catId, dishId);
-  showPage('dish-page', { catId, dishId });
+// ══════════════════════════════
+// ADMIN AUTH
+// ══════════════════════════════
+function doLogin() {
+  if(document.getElementById('pw-input').value===ADMIN_PW) {
+    show('s-admin'); loadAdminItems();
+  } else {
+    const err=document.getElementById('login-error');
+    err.style.display='block';
+    setTimeout(()=>err.style.display='none',3000);
+  }
 }
+function doLogout() { show('s-admin-login'); document.getElementById('pw-input').value=''; }
+
+// ══════════════════════════════
+// ADMIN DATA
+// ══════════════════════════════
+async function sbFetch(method,path,body) {
+  const res=await fetch(`${SB_URL}/rest/v1/${path}`,{
+    method,
+    headers:{'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':'return=minimal'},
+    body:body?JSON.stringify(body):undefined
+  });
+  if(method==='GET'||method==='POST')return res.json();
+  return res;
+}
+async function loadAdminItems() {
+  const data=await sbFetch('GET','menu_items?order=category.asc,sort_order.asc');
+  allItems=data; renderAdminList();
+}
+function renderAdminList() {
+  const items=allItems.filter(i=>i.category===adminCat);
+  const list=document.getElementById('dish-list');
+  if(!items.length){list.innerHTML='<div class="loading-row">No dishes yet.</div>';return;}
+  list.innerHTML=items.map(item=>{
+    const pts=[];
+    if(item.price_full)pts.push(`Full ₹${item.price_full}`);
+    if(item.price_3_4)pts.push(`¾ ₹${item.price_3_4}`);
+    if(item.price_half)pts.push(`Half ₹${item.price_half}`);
+    if(item.price_qtr)pts.push(`Qtr ₹${item.price_qtr}`);
+    if(item.price_portion)pts.push(`₹${item.price_portion}`);
+    if(item.price_piece)pts.push(`₹${item.price_piece}/pc`);
+    const thumb=item.img
+      ?`<div class="dish-row-thumb"><img src="${item.img}" alt="" onerror="this.parentElement.textContent='🍽️'"></div>`
+      :`<div class="dish-row-thumb">🍽️</div>`;
+    return `<div class="dish-row">${thumb}
+      <div class="dish-row-info">
+        <div class="dish-row-name">${item.name}</div>
+        <div class="dish-row-badge">${item.badge||''}</div>
+        <div class="dish-row-price">${pts.join(' · ')||'No prices'}</div>
+      </div>
+      <div class="dish-row-actions">
+        <button class="edit-btn" onclick="openEditModal('${item.id}')">Edit</button>
+        <button class="del-btn" onclick="deleteDish('${item.id}','${item.name.replace(/'/g,"\\'")}')">Del</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function switchCat(cat,el) {
+  adminCat=cat;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderAdminList();
+}
+
+// ══════════════════════════════
+// MODAL
+// ══════════════════════════════
+function clearForm() {
+  ['edit-id','edit-name','edit-arabic','edit-badge','edit-tagline','edit-desc',
+   'edit-img','edit-includes','edit-notes','edit-sort',
+   'p-full','p-3-4','p-half','p-qtr','p-portion','p-piece'].forEach(id=>{
+    const el=document.getElementById(id); if(el)el.value='';
+  });
+}
+function openAddModal() {
+  clearForm();
+  document.getElementById('edit-cat').value=adminCat;
+  document.getElementById('modal-title-text').textContent='Add New Dish';
+  document.getElementById('modal-bg').classList.add('open');
+}
+function openEditModal(id) {
+  const item=allItems.find(i=>i.id===id); if(!item)return;
+  clearForm();
+  document.getElementById('edit-id').value=item.id;
+  document.getElementById('edit-cat').value=item.category;
+  document.getElementById('edit-name').value=item.name||'';
+  document.getElementById('edit-arabic').value=item.arabic||'';
+  document.getElementById('edit-badge').value=item.badge||'';
+  document.getElementById('edit-tagline').value=item.tagline||'';
+  document.getElementById('edit-desc').value=item.description||'';
+  document.getElementById('edit-img').value=item.img||'';
+  document.getElementById('edit-includes').value=item.includes||'';
+  document.getElementById('edit-notes').value=item.notes||'';
+  document.getElementById('edit-sort').value=item.sort_order||0;
+  if(item.price_full)document.getElementById('p-full').value=item.price_full;
+  if(item.price_3_4)document.getElementById('p-3-4').value=item.price_3_4;
+  if(item.price_half)document.getElementById('p-half').value=item.price_half;
+  if(item.price_qtr)document.getElementById('p-qtr').value=item.price_qtr;
+  if(item.price_portion)document.getElementById('p-portion').value=item.price_portion;
+  if(item.price_piece)document.getElementById('p-piece').value=item.price_piece;
+  document.getElementById('modal-title-text').textContent='Edit — '+item.name;
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+
+async function saveDish() {
+  const btn=document.getElementById('save-btn');
+  btn.disabled=true; btn.textContent='Saving...';
+  const id=document.getElementById('edit-id').value;
+  const body={
+    category:document.getElementById('edit-cat').value,
+    name:document.getElementById('edit-name').value.trim(),
+    arabic:document.getElementById('edit-arabic').value.trim()||null,
+    badge:document.getElementById('edit-badge').value.trim()||null,
+    tagline:document.getElementById('edit-tagline').value.trim()||null,
+    description:document.getElementById('edit-desc').value.trim()||null,
+    img:document.getElementById('edit-img').value.trim()||null,
+    includes:document.getElementById('edit-includes').value.trim()||null,
+    notes:document.getElementById('edit-notes').value.trim()||null,
+    sort_order:parseInt(document.getElementById('edit-sort').value)||0,
+    price_full:parseInt(document.getElementById('p-full').value)||null,
+    price_3_4:parseInt(document.getElementById('p-3-4').value)||null,
+    price_half:parseInt(document.getElementById('p-half').value)||null,
+    price_qtr:parseInt(document.getElementById('p-qtr').value)||null,
+    price_portion:parseInt(document.getElementById('p-portion').value)||null,
+    price_piece:parseInt(document.getElementById('p-piece').value)||null,
+    active:true
+  };
+  if(!body.name){showToast('Dish name is required',true);btn.disabled=false;btn.textContent='Save Changes';return;}
+  try {
+    if(id){
+      await sbFetch('PATCH',`menu_items?id=eq.${id}`,body);
+      const idx=allItems.findIndex(i=>i.id===id);
+      if(idx!==-1)allItems[idx]={...allItems[idx],...body};
+      // also update MENU cache
+      if(MENU[body.category]){
+        const midx=MENU[body.category].findIndex(i=>i.id===id);
+        if(midx!==-1)MENU[body.category][midx]={...MENU[body.category][midx],...body};
+      }
+    } else {
+      const res=await sbFetch('POST','menu_items',body);
+      if(Array.isArray(res)&&res[0]){
+        allItems.push(res[0]);
+        if(!MENU[body.category])MENU[body.category]=[];
+        MENU[body.category].push(res[0]);
+      }
+    }
+    renderAdminList();
+    closeModal();
+    showToast(id?'Dish updated!':'New dish added!');
+  } catch(e){showToast('Something went wrong.',true);}
+  btn.disabled=false; btn.textContent='Save Changes';
+}
+
+async function deleteDish(id,name) {
+  if(!confirm(`Delete "${name}"? This cannot be undone.`))return;
+  await sbFetch('DELETE',`menu_items?id=eq.${id}`);
+  allItems=allItems.filter(i=>i.id!==id);
+  Object.keys(MENU).forEach(cat=>{ MENU[cat]=MENU[cat].filter(i=>i.id!==id); });
+  renderAdminList();
+  showToast('Dish deleted.');
+}
+
+function showToast(msg,isErr=false) {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast'+(isErr?' err':'')+' show';
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ══════════════════════════════
+// INIT
+// ══════════════════════════════
+loadMenu();
 </script>
 </body>
 </html>
