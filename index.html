@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cloud 9 Digital Menu</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Jost:wght@300;400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --deep:#1C1208;--amber:#C8843A;--gold:#D4A853;
+  --cream:#FAF4E8;--wgray:#8C7B6B;
+  --abg:#0f0f0f;--acard:#1a1a1a;--aborder:#2a2a2a;
+  --awhite:#f0f0f0;--agray:#888;--ared:#e05252;--agreen:#52b788;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--deep);color:var(--cream);overflow-x:hidden}
+.screen{display:none!important}
+.screen.on{display:block!important}
+
+/* HOME */
+#pg-home{background:var(--deep);min-height:100vh;position:relative;overflow:hidden}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,#3d1f08 0%,transparent 70%),radial-gradient(ellipse 60% 40% at 80% 80%,#2a1205 0%,transparent 60%)}
+.hbg::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(212,168,83,.03) 0px,rgba(212,168,83,.03) 1px,transparent 1px,transparent 40px),repeating-linear-gradient(-45deg,rgba(212,168,83,.03) 0px,rgba(212,168,83,.03) 1px,transparent 1px,transparent 40px);pointer-events:none}
+.hcontent{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;padding:3.5rem 1.5rem 2rem;min-height:100vh}
+.logo-mark{width:72px;height:72px;background:var(--amber);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:1.5rem;box-shadow:0 8px 32px rgba(200,132,58,.4);animation:float 3s ease-in-out infinite;cursor:pointer}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.htitle{font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:700;color:var(--gold);text-align:center;line-height:1}
+.hsub{font-size:.7rem;color:var(--amber);letter-spacing:.35em;text-transform:uppercase;margin-top:.5rem;text-align:center}
+.hdiv{display:flex;align-items:center;gap:1rem;margin:2rem 0;width:100%;max-width:280px}
+.hdl{flex:1;height:1px;background:rgba(212,168,83,.3)}
+.hds{color:var(--gold);font-size:.7rem}
+.hbadge{background:rgba(212,168,83,.08);border:1px solid rgba(212,168,83,.2);border-radius:8px;padding:1rem 1.5rem;text-align:center;max-width:300px;margin-bottom:2.5rem}
+.hbadge .lbl{font-size:.6rem;color:var(--amber);letter-spacing:.25em;text-transform:uppercase;margin-bottom:.3rem}
+.hbadge .txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:var(--gold);line-height:1.4}
+.catgrid{width:100%;max-width:380px;display:flex;flex-direction:column;gap:.8rem}
+.catcard{background:rgba(255,255,255,.04);border:1px solid rgba(212,168,83,.15);border-radius:14px;padding:1.1rem 1.3rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.catcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--amber);transform:scaleY(0);transition:transform .25s;border-radius:0 2px 2px 0}
+.catcard:active{transform:scale(.98);background:rgba(212,168,83,.08)}
+.catcard:active::before{transform:scaleY(1)}
+.cicon{font-size:1.8rem;flex-shrink:0;width:44px;height:44px;background:rgba(200,132,58,.12);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.cinfo{flex:1}
+.cname{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:#f0e0c0;line-height:1}
+.cdesc{font-size:.7rem;color:var(--wgray);margin-top:.2rem}
+.ccount{font-size:.65rem;color:var(--amber)}
+.carrow{color:rgba(212,168,83,.4);font-size:1rem}
+.hfoot{margin-top:auto;padding-top:2rem;text-align:center;color:rgba(140,123,107,.5);font-size:.65rem;letter-spacing:.05em}
+
+/* CATEGORY */
+#pg-cat{background:var(--cream);min-height:100vh}
+.pghdr{background:var(--deep);padding:1rem 1.2rem;border-bottom:1px solid rgba(212,168,83,.2);position:sticky;top:0;z-index:10}
+.backbtn{font-size:.75rem;color:var(--amber);cursor:pointer;letter-spacing:.05em;margin-bottom:.3rem;display:inline-block}
+.pgttl{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--gold);line-height:1}
+.pgsub{font-size:.65rem;color:var(--wgray);letter-spacing:.08em;margin-top:.15rem}
+.sizebar{display:flex;gap:.5rem;padding:.8rem 1.2rem;background:rgba(28,18,8,.05);border-bottom:1px solid rgba(200,132,58,.15);overflow-x:auto;scrollbar-width:none}
+.sizebar::-webkit-scrollbar{display:none}
+.spill{flex-shrink:0;background:var(--deep);color:var(--amber);border-radius:20px;padding:.28rem .7rem;font-size:.6rem;font-weight:500;letter-spacing:.08em;white-space:nowrap}
+.spill span{color:var(--wgray);margin-left:.2rem}
+.ilist{padding:1rem 1.1rem}
+.dcard{background:white;border-radius:14px;overflow:hidden;margin-bottom:1rem;box-shadow:0 2px 12px rgba(28,18,8,.08);cursor:pointer;transition:transform .2s}
+.dcard:active{transform:scale(.99)}
+.dimg{width:100%;height:200px;object-fit:cover;display:block}
+.dph{width:100%;height:160px;background:linear-gradient(135deg,#2a1a08,#3d2510);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem}
+.dph .pe{font-size:3.5rem}
+.dph .pl{font-size:.65rem;color:rgba(200,132,58,.5);letter-spacing:.1em;text-transform:uppercase}
+.dbody{padding:1rem 1.2rem 1.2rem}
+.dtop{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem}
+.dname{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--deep);line-height:1.1;flex:1}
+.dbadge{background:var(--amber);color:white;font-size:.55rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .5rem;border-radius:3px;flex-shrink:0;margin-left:.5rem;margin-top:.1rem}
+.dtagline{font-size:.72rem;color:var(--wgray);margin-bottom:.8rem;line-height:1.4}
+.ppreview{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.8rem}
+.pchip{background:#faf4e8;border:1px solid rgba(200,132,58,.2);border-radius:8px;padding:.4rem .6rem;display:flex;align-items:center;gap:.5rem;min-width:80px}
+.pslbl{font-size:.6rem;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.06em}
+.pssrv{font-size:.55rem;color:var(--wgray)}
+.psamt{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:700;color:var(--deep)}
+.psrs{font-size:.75rem;color:var(--amber)}
+.vdbtn{font-size:.7rem;color:var(--amber);font-weight:500;letter-spacing:.05em;text-align:right}
+.pwby{text-align:center;padding:1.5rem;font-size:.62rem;color:rgba(140,123,107,.5);letter-spacing:.1em}
+.pwby span{color:var(--amber)}
+
+/* DISH */
+#pg-dish{background:var(--cream);min-height:100vh}
+.dhero{position:relative;overflow:hidden;height:300px}
+#dhimg{width:100%;height:100%;object-fit:cover;display:block}
+.dhov{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,rgba(28,18,8,.8) 100%)}
+.dhback{position:absolute;top:1.2rem;left:1.2rem;background:rgba(0,0,0,.3);padding:.4rem .8rem;border-radius:20px;cursor:pointer;font-size:.75rem;color:var(--amber);z-index:2}
+.dhbadge{position:absolute;bottom:1rem;right:1rem;z-index:2;background:var(--amber);color:white;font-size:.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;border-radius:3px}
+.ddc{padding:1.4rem 1.2rem}
+.ddname{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:700;color:var(--deep);line-height:1.1;margin-bottom:.2rem}
+.ddarab{font-size:.7rem;color:var(--wgray);letter-spacing:.08em;margin-bottom:1rem}
+.dddesc{font-size:.85rem;line-height:1.7;color:#4a3728;margin-bottom:1.5rem}
+.slbl{font-size:.62rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);margin-bottom:.7rem}
+.pgrid{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem}
+.pcard{background:white;border:1px solid rgba(200,132,58,.15);border-radius:12px;padding:.9rem 1.1rem;display:flex;align-items:center;justify-content:space-between}
+.pvl{flex:1}
+.pvsz{font-size:.7rem;font-weight:700;color:var(--amber);letter-spacing:.12em;text-transform:uppercase}
+.pvsrv{font-size:.75rem;font-weight:600;color:var(--deep);margin-top:.1rem}
+.pvdsc{font-size:.65rem;color:var(--wgray);margin-top:.1rem}
+.pvp{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--deep)}
+.pvrs{font-size:1rem;color:var(--amber)}
+.incgrid{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.5rem}
+.inchip{background:rgba(200,132,58,.1);border:1px solid rgba(200,132,58,.2);border-radius:20px;padding:.3rem .7rem;font-size:.68rem;color:#5a3e2b}
+.dnotes{background:rgba(28,18,8,.04);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:.9rem 1rem;font-size:.78rem;line-height:1.6;color:#4a3728;margin-bottom:2rem}
+
+/* ADMIN LOGIN */
+#pg-alog{font-family:'Inter',sans-serif;background:var(--abg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.acard{background:var(--acard);border:1px solid var(--aborder);border-radius:16px;padding:2.5rem 2rem;width:100%;max-width:360px;text-align:center}
+.alogo{font-size:2.5rem;margin-bottom:.8rem}
+.attl{font-size:1.3rem;font-weight:700;color:var(--gold);margin-bottom:.3rem}
+.asub{font-size:.78rem;color:var(--agray);margin-bottom:2rem}
+.abk{font-size:.72rem;color:var(--agray);cursor:pointer;margin-bottom:1.5rem;display:inline-block}
+.abk:hover{color:var(--amber)}
+.ainp{width:100%;background:var(--abg);border:1px solid var(--aborder);border-radius:8px;padding:.8rem 1rem;color:var(--awhite);font-size:.9rem;font-family:'Inter',sans-serif;margin-bottom:1rem;outline:none;transition:border-color .2s}
+.ainp:focus{border-color:var(--amber)}
+.asbtn{width:100%;background:var(--amber);color:white;border:none;border-radius:8px;padding:.85rem;font-size:.9rem;font-weight:600;cursor:pointer;transition:background .2s}
+.asbtn:hover{background:var(--gold)}
+.aerr{color:var(--ared);font-size:.78rem;margin-top:.8rem;display:none}
+
+/* ADMIN PANEL */
+#pg-admin{font-family:'Inter',sans-serif;background:var(--abg);min-height:100vh}
+.atbar{background:var(--acard);border-bottom:1px solid var(--aborder);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.atttl{font-size:1rem;font-weight:700;color:var(--gold)}
+.atsub{font-size:.68rem;color:var(--agray);margin-top:.1rem}
+.atbtns{display:flex;gap:.6rem}
+.vmbtn{background:rgba(212,168,83,.1);border:1px solid rgba(212,168,83,.3);color:var(--amber);padding:.4rem .9rem;border-radius:6px;font-size:.72rem;font-weight:600;cursor:pointer}
+.lgbtn{background:transparent;border:1px solid var(--aborder);color:var(--agray);padding:.4rem .9rem;border-radius:6px;font-size:.72rem;cursor:pointer}
+.lgbtn:hover{border-color:var(--ared);color:var(--ared)}
+.abody{padding:1.5rem;max-width:600px;margin:0 auto}
+.ctabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.ctab{background:var(--acard);border:1px solid var(--aborder);border-radius:20px;padding:.4rem 1rem;font-size:.75rem;font-weight:600;color:var(--agray);cursor:pointer;transition:all .2s}
+.ctab.on{background:var(--amber);border-color:var(--amber);color:white}
+.addbtn{width:100%;background:transparent;border:1px dashed var(--amber);border-radius:10px;padding:.85rem;color:var(--amber);font-size:.82rem;font-weight:600;cursor:pointer;margin-bottom:1rem}
+.addbtn:hover{background:rgba(200,132,58,.08)}
+.drow{background:var(--acard);border:1px solid var(--aborder);border-radius:10px;padding:1rem;margin-bottom:.7rem;display:flex;align-items:center;gap:1rem}
+.dthumb{width:52px;height:52px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#222;display:flex;align-items:center;justify-content:center;font-size:1.5rem;overflow:hidden}
+.dthumb img{width:100%;height:100%;object-fit:cover}
+.drinfo{flex:1;min-width:0}
+.drname{font-size:.88rem;font-weight:600;color:var(--awhite);margin-bottom:.2rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drbadge{font-size:.6rem;color:var(--amber)}
+.drprice{font-size:.72rem;color:var(--agray);margin-top:.1rem}
+.dract{display:flex;gap:.5rem;flex-shrink:0}
+.ebtn,.delbtn{border:none;border-radius:6px;padding:.4rem .7rem;font-size:.7rem;font-weight:600;cursor:pointer}
+.ebtn{background:rgba(200,132,58,.15);color:var(--amber)}
+.delbtn{background:rgba(224,82,82,.12);color:var(--ared)}
+.lrow{text-align:center;padding:2rem;color:var(--agray);font-size:.85rem}
+
+/* MODAL */
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.mbg.on{display:flex}
+.modal{background:var(--acard);border:1px solid var(--aborder);border-radius:20px 20px 0 0;padding:1.5rem;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;animation:mup .3s ease}
+@keyframes mup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mttl{font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between}
+.mclose{background:none;border:none;color:var(--agray);font-size:1.2rem;cursor:pointer}
+.fg{margin-bottom:1rem}
+.fl{font-size:.7rem;font-weight:600;color:var(--agray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;display:block}
+.fi,.fta{width:100%;background:var(--abg);border:1px solid var(--aborder);border-radius:8px;padding:.7rem .9rem;color:var(--awhite);font-size:.85rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s}
+.fi:focus,.fta:focus{border-color:var(--amber)}
+.fta{resize:vertical;min-height:80px;line-height:1.5}
+.pgr{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.svbtn{width:100%;background:var(--amber);color:white;border:none;border-radius:10px;padding:.9rem;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:.5rem}
+.svbtn:disabled{opacity:.5;cursor:not-allowed}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--agreen);color:white;padding:.7rem 1.4rem;border-radius:20px;font-size:.8rem;font-weight:600;z-index:200;opacity:0;transition:opacity .3s;pointer-events:none;font-family:'Inter',sans-serif;white-space:nowrap}
+.toast.err{background:var(--ared)}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+
+<div id="pg-home" class="screen on">
+  <div class="hbg"></div>
+  <div class="hcontent">
+    <div class="logo-mark" id="secret-logo">☁️</div>
+    <div class="htitle">Cloud 9</div>
+    <div class="hsub">Mandi &amp; Grills · Ottapalam</div>
+    <div class="hdiv"><div class="hdl"></div><div class="hds">✦</div><div class="hdl"></div></div>
+    <div class="hbadge">
+      <div class="lbl">Our Legacy</div>
+      <div class="txt">"The first to bring authentic<br>Kuzhi Mandi to Kerala —<br>by Mandi Kaka"</div>
+    </div>
+    <div class="catgrid">
+      <div class="catcard" onclick="openCat('mandi')">
+        <div class="cicon">🫕</div>
+        <div class="cinfo"><div class="cname">Mandi</div><div class="cdesc">Slow pit-cooked rice &amp; meat</div></div>
+        <div class="ccount" id="cnt-mandi">7 dishes</div>
+        <div class="carrow">›</div>
+      </div>
+      <div class="catcard" onclick="openCat('alfaham')">
+        <div class="cicon">🍗</div>
+        <div class="cinfo"><div class="cname">Al Faham</div><div class="cdesc">Arabian charcoal grilled chicken</div></div>
+        <div class="ccount" id="cnt-alfaham">5 dishes</div>
+        <div class="carrow">›</div>
+      </div>
+      <div class="catcard" onclick="openCat('extras')">
+        <div class="cicon">🍚</div>
+        <div class="cinfo"><div class="cname">Extras &amp; Sides</div><div class="cdesc">Rice, kuboos, sauces</div></div>
+        <div class="ccount" id="cnt-extras">3 items</div>
+        <div class="carrow">›</div>
+      </div>
+    </div>
+    <div class="hfoot">All prices inclusive of GST · Order ready in 15–20 mins<br>Unlimited rice with dine-in only · Not available for takeaway</div>
+  </div>
+</div>
+
+<div id="pg-cat" class="screen">
+  <div class="pghdr">
+    <div class="backbtn" onclick="goHome()">← Back to Menu</div>
+    <div class="pgttl" id="cat-title"></div>
+    <div class="pgsub" id="cat-sub"></div>
+  </div>
+  <div class="sizebar">
+    <div class="spill">Full <span>4 pax</span></div>
+    <div class="spill">¾ <span>3 pax</span></div>
+    <div class="spill">Half <span>2 pax</span></div>
+    <div class="spill">Qtr <span>1 pax</span></div>
+    <div class="spill">Unlimited rice dine-in</div>
+  </div>
+  <div class="ilist" id="ilist"></div>
+  <div class="pwby">Digital menu by <span>▲ NovaByte</span></div>
+</div>
+
+<div id="pg-dish" class="screen">
+  <div class="dhero">
+    <img id="dhimg" src="" alt="">
+    <div class="dhov"></div>
+    <div class="dhback" onclick="goBack()">← Back</div>
+    <div class="dhbadge" id="dhbadge"></div>
+  </div>
+  <div class="ddc">
+    <div class="ddname" id="ddname"></div>
+    <div class="ddarab" id="ddarab"></div>
+    <div class="dddesc" id="dddesc"></div>
+    <div class="slbl">Choose Your Portion</div>
+    <div class="pgrid" id="dpgrid"></div>
+    <div class="slbl">What's Served With It</div>
+    <div class="incgrid" id="dincgrid"></div>
+    <div class="dnotes" id="dnotes"></div>
+  </div>
+  <div class="pwby">Digital menu by <span>▲ NovaByte</span></div>
+</div>
+
+<div id="pg-alog" class="screen">
+  <div class="acard">
+    <div class="alogo">☁️</div>
+    <div class="attl">Cloud 9 Admin</div>
+    <div class="asub">Menu Management Panel</div>
+    <span class="abk" onclick="goHome()">← Back to Menu</span>
+    <input type="password" class="ainp" id="pw-inp" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="asbtn" onclick="doLogin()">Sign In</button>
+    <div class="aerr" id="aerr">Incorrect password.</div>
+  </div>
+</div>
+
+<div id="pg-admin" class="screen">
+  <div class="atbar">
+    <div><div class="atttl">☁️ Cloud 9 Admin</div><div class="atsub">Edit dishes, prices and images</div></div>
+    <div class="atbtns">
+      <button class="vmbtn" onclick="goHome()">View Menu</button>
+      <button class="lgbtn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+  <div class="abody">
+    <div class="ctabs">
+      <div class="ctab on" onclick="switchCat('mandi',this)">Mandi</div>
+      <div class="ctab" onclick="switchCat('alfaham',this)">Al Faham</div>
+      <div class="ctab" onclick="switchCat('extras',this)">Extras</div>
+    </div>
+    <button class="addbtn" onclick="openAdd()">+ Add New Dish</button>
+    <div id="dlist"><div class="lrow">Loading...</div></div>
+  </div>
+</div>
+
+<div class="mbg" id="mbg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="mttl"><span id="mttl-txt">Edit Dish</span><button class="mclose" onclick="closeModal()">✕</button></div>
+    <input type="hidden" id="eid">
+    <input type="hidden" id="ecat">
+    <div class="fg"><label class="fl">Dish Name *</label><input type="text" class="fi" id="ename" placeholder="e.g. Chicken Mandi"></div>
+    <div class="fg"><label class="fl">Arabic Subtitle</label><input type="text" class="fi" id="earab" placeholder="e.g. مندي دجاج"></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Badge</label><input type="text" class="fi" id="ebadge" placeholder="e.g. Chef Special"></div>
+      <div class="fg"><label class="fl">Sort Order</label><input type="number" class="fi" id="esort" placeholder="1"></div>
+    </div>
+    <div class="fg"><label class="fl">Tagline</label><input type="text" class="fi" id="etagline" placeholder="Short card description"></div>
+    <div class="fg"><label class="fl">Full Description</label><textarea class="fta" id="edesc" placeholder="Detailed description..."></textarea></div>
+    <div class="fg"><label class="fl">Photo URL</label><input type="text" class="fi" id="eimg" placeholder="https://i.imgur.com/... (leave blank for placeholder)"></div>
+    <div class="fg">
+      <label class="fl">Prices (leave blank if not applicable)</label>
+      <div class="pgr">
+        <div><label class="fl" style="font-size:.6rem">Full (4 pax)</label><input type="number" class="fi" id="pf" placeholder="680"></div>
+        <div><label class="fl" style="font-size:.6rem">3/4 (3 pax)</label><input type="number" class="fi" id="p34" placeholder="520"></div>
+        <div><label class="fl" style="font-size:.6rem">Half (2 pax)</label><input type="number" class="fi" id="ph" placeholder="350"></div>
+        <div><label class="fl" style="font-size:.6rem">Quarter (1 pax)</label><input type="number" class="fi" id="pq" placeholder="180"></div>
+        <div><label class="fl" style="font-size:.6rem">Portion</label><input type="number" class="fi" id="pp" placeholder="10"></div>
+        <div><label class="fl" style="font-size:.6rem">Per Piece</label><input type="number" class="fi" id="ppc" placeholder="10"></div>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Includes (comma separated)</label><input type="text" class="fi" id="einc" placeholder="Mandi Rice, Tomato Chutney, Salad"></div>
+    <div class="fg"><label class="fl">Chef Note</label><textarea class="fta" id="enotes" style="min-height:60px" placeholder="Tip shown at bottom of dish page"></textarea></div>
+    <button class="svbtn" id="svbtn" onclick="saveDish()">Save Changes</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var MENU = {};
+var curCat = null;
+var admCat = "mandi";
+var allItems = [];
+var tapN = 0, tapT = null;
+
+var SRV = {full:"4 people","3/4":"3 people",half:"2 people",qtr:"1 person",portion:"Per portion",piece:"Per piece"};
+var SRVD = {full:"Best for a full table","3/4":"Perfect for a group of 3",half:"Ideal for two",qtr:"Solo portion",portion:"Add-on",piece:"Individual"};
+var CMETA = {
+  mandi:{title:"Mandi",subtitle:"Slow pit-cooked Arabian rice and meat"},
+  alfaham:{title:"Al Faham",subtitle:"Arabian charcoal-grilled chicken"},
+  extras:{title:"Extras and Sides",subtitle:"Add on to complete your meal"}
+};
+
+var DEF = {
+  mandi:[
+    {id:"chicken-mandi",category:"mandi",name:"Chicken Mandi",arabic:"مندي دجاج · Pit Cooked",badge:"Our Classic",tagline:"The dish that started it all — slow-cooked in an underground pit",description:"Our signature Chicken Mandi follows the authentic Yemeni tradition — whole chicken marinated in a secret blend of hawaj spices, slow-cooked 2-3 hours underground over tamarind-wood embers. No added oil. No ghee. Just pure, clean, smoky depth.",img:null,price_full:680,price_3_4:520,price_half:350,price_qtr:180,includes:"Mandi Rice, Tomato Chutney, Cabbage Salad, Mayonnaise",notes:"Quarter = 1 person, Half = 2 people, 3/4 = 3 people, Full = 4 people. Unlimited rice with dine-in only.",sort_order:1,active:true},
+    {id:"beef-mandi",category:"mandi",name:"Beef Mandi",arabic:"مندي لحم · Slow Pit Roasted",badge:"Bold and Rich",tagline:"Tender slow-roasted beef with deep smoky flavour",description:"Tender beef cuts marinated overnight in aromatic spice pastes, pit-roasted for hours until the meat falls away from the bone.",img:null,price_full:940,price_3_4:720,price_half:480,price_qtr:250,includes:"Mandi Rice, Tomato Chutney, Cabbage Salad, Mayonnaise",notes:"Beef Mandi has a richer, heavier flavour profile. Best shared between 2 or more people.",sort_order:2,active:true},
+    {id:"peri-peri-mandi",category:"mandi",name:"Peri Peri Mandi",arabic:"مندي بيري بيري · Fiery Spiced",badge:"Spicy",tagline:"Classic Mandi elevated with bold African chilli",description:"Our classic pit-cooked Mandi transformed with an African peri peri marinade — chilli, black pepper, and herbs blended into the chicken.",img:null,price_full:860,price_3_4:650,price_half:440,price_qtr:230,includes:"Mandi Rice, Tomato Chutney, Cabbage Salad, Mayonnaise",notes:"Moderately spicy. Ask staff to reduce peri peri if you prefer milder.",sort_order:3,active:true},
+    {id:"honey-chilly-alfaham-mandi",category:"mandi",name:"Honey Chilly Alfaham Mandi",arabic:"مندي الفحم بالعسل · Sweet and Spicy",badge:"Fan Favourite",tagline:"Sweet honey glaze, charcoal smoke, and a kick of chilli",description:"Al Faham charcoal-grilled chicken brushed with a sticky honey-chilli glaze, served atop our authentic pit-cooked Mandi rice.",img:null,price_full:860,price_3_4:650,price_half:440,price_qtr:230,includes:"Mandi Rice, Tomato Chutney, Cabbage Salad, Mayonnaise",notes:"Combines pit-cooking and charcoal grilling in one dish — a unique Cloud 9 creation.",sort_order:4,active:true},
+    {id:"normal-alfaham-mandi",category:"mandi",name:"Normal Alfaham Mandi",arabic:"مندي الفحم العادي · Classic Grilled",badge:"Classic",tagline:"Charcoal Al Faham chicken on a bed of aromatic Mandi rice",description:"Al Faham chicken grilled over live charcoal served on our slow pit-cooked Mandi rice. Golden, crisp-skinned, and lightly smoky.",img:null,price_full:800,price_3_4:610,price_half:410,price_qtr:210,includes:"Mandi Rice, Tomato Chutney, Cabbage Salad, Mayonnaise",notes:"Best for first-timers to Mandi who want a familiar grilled chicken flavour.",sort_order:5,active:true},
+    {id:"shawaya-mandi",category:"mandi",name:"Shawaya Mandi",arabic:"مندي شواية · Open Flame Grilled",badge:"Signature",tagline:"Open-flame rotisserie chicken with our legendary pit rice",description:"Whole chicken slowly rotated above open fire, basted repeatedly in spiced butter and herbs until the skin caramelises into a deep mahogany.",img:null,price_full:860,price_3_4:650,price_half:440,price_qtr:230,includes:"Mandi Rice, Tomato Chutney, Cabbage Salad, Mayonnaise",notes:"Shawaya Mandi is rare in Kerala. Cloud 9 was among the first to bring this to the region.",sort_order:6,active:true},
+    {id:"cloud9-special-alfaham-mandi",category:"mandi",name:"Cloud 9 Special Alfaham Mandi",arabic:"المندي الخاص · Chef Special",badge:"Chef Special",tagline:"A secret recipe that no one has been able to replicate",description:"The Cloud 9 Special uses a proprietary spice blend developed and refined over years by Mandi Kaka himself. Order it once and you will understand why people come back.",img:null,price_full:860,price_3_4:650,price_half:440,price_qtr:230,includes:"Mandi Rice, Tomato Chutney, Cabbage Salad, Mayonnaise",notes:"If you have never been here before, this is the dish that will define Cloud 9 for you.",sort_order:7,active:true}
+  ],
+  alfaham:[
+    {id:"chicken-meat-only",category:"alfaham",name:"Chicken — Meat Only",arabic:"دجاج فحم · Pure Grill",badge:"Grill Only",tagline:"Just the charcoal chicken — for those who know what they want",description:"Al Faham chicken rubbed in a classic Arabian spice blend then grilled over live charcoal until deeply golden. No rice. No frills.",img:null,price_full:440,price_3_4:340,price_half:230,price_qtr:120,includes:"Tomato Chutney, Mayonnaise, Salad",notes:"Mandi Rice (Qtr) available for Rs 110 extra. Kuboos at Rs 10.",sort_order:1,active:true},
+    {id:"normal-alfaham",category:"alfaham",name:"Normal Alfaham",arabic:"الفحم العادي · Classic",badge:"Classic",tagline:"Traditional Arabian charcoal-grilled chicken with rice",description:"Chicken marinated in the classic Arabian blend — garlic, ginger, cumin, coriander — grilled over charcoal until crisp and golden.",img:null,price_full:590,price_3_4:450,price_half:300,price_qtr:150,includes:"Rice, Tomato Chutney, Mayonnaise, Salad",notes:"Normal Alfaham is the benchmark. If you are new to Al Faham cuisine, start here.",sort_order:2,active:true},
+    {id:"peri-peri-alfaham",category:"alfaham",name:"Peri Peri Alfaham",arabic:"الفحم بيري بيري · Fiery",badge:"Spicy",tagline:"Charcoal chicken with intense peri peri heat",description:"Al Faham chicken coated in a fiery peri peri marinade before hitting the charcoal grill.",img:null,price_full:600,price_3_4:460,price_half:310,price_qtr:160,includes:"Rice, Tomato Chutney, Mayonnaise, Salad",notes:"Genuinely spicy. If heat-sensitive, go for Normal Alfaham instead.",sort_order:3,active:true},
+    {id:"honey-chilly-alfaham",category:"alfaham",name:"Honey Chilly Alfaham",arabic:"الفحم بالعسل · Sweet and Hot",badge:"Most Ordered",tagline:"The crowd-pleaser — sweet honey glaze with a chilli kick",description:"Charcoal-grilled chicken glazed with our house honey-chilli sauce — natural honey sweetness balancing the heat of green chillies.",img:null,price_full:600,price_3_4:460,price_half:310,price_qtr:160,includes:"Rice, Tomato Chutney, Mayonnaise, Salad",notes:"Sweet-spicy balance appeals to everyone. Great for mixed groups.",sort_order:4,active:true},
+    {id:"cloud9-special-alfaham",category:"alfaham",name:"Cloud 9 Special Alfaham",arabic:"الفحم الخاص · Signature",badge:"Chef Special",tagline:"Mandi Kaka personal recipe — never shared, never replicated",description:"Developed and perfected over years by Mandi Kaka — the pioneer of Kuzhi Mandi in Kerala. The marinade is a proprietary blend that is never disclosed.",img:null,price_full:590,price_3_4:450,price_half:300,price_qtr:150,includes:"Rice, Tomato Chutney, Mayonnaise, Salad",notes:"Mandi Kaka pioneered Kuzhi Mandi in Kerala. This is his personal recipe.",sort_order:5,active:true}
+  ],
+  extras:[
+    {id:"mandi-rice",category:"extras",name:"Mandi Rice",arabic:"أرز المندي · Quarter",badge:"Add-on",tagline:"Our fragrant pit-cooked rice — available separately",description:"The same slow-cooked basmati infused with whole spices — clove, cinnamon, cardamom, dried black lemon — cooked in meat stock.",img:null,price_qtr:110,includes:"Served plain, Pairs with any main",notes:"Available per quarter only. Full rice included with all mains.",sort_order:1,active:true},
+    {id:"mayo-extra",category:"extras",name:"Mayo Extra",arabic:"مايونيز إضافي",badge:"Side",tagline:"House mayonnaise — the essential pairing",description:"Our house-made mayonnaise, creamy and mildly tangy. The perfect accompaniment to any grilled chicken or Mandi rice.",img:null,price_portion:10,includes:"Served as side",notes:"Mix a spoon of mayo into your Mandi rice for a completely different flavour experience.",sort_order:2,active:true},
+    {id:"kuboos",category:"extras",name:"Kuboos",arabic:"خبز عربي · Arabic Flatbread",badge:"Bread",tagline:"Soft Arabic flatbread — the traditional side",description:"Soft, thin Arabic flatbread — warm, pillowy, and lightly charred at the edges.",img:null,price_piece:10,includes:"Served warm",notes:"Tear a piece, scoop up Mandi rice and chicken, eat together. The authentic way.",sort_order:3,active:true}
+  ]
+};
+
+function getData(){
+  try{var s=localStorage.getItem("c9menu");if(s)return JSON.parse(s);}catch(e){}
+  return JSON.parse(JSON.stringify(DEF));
+}
+function saveData(d){try{localStorage.setItem("c9menu",JSON.stringify(d));}catch(e){}}
+
+function show(id){
+  document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("on");});
+  document.getElementById(id).classList.add("on");
+  window.scrollTo(0,0);
+}
+
+function initMenu(){
+  MENU=getData();
+  allItems=[];
+  Object.keys(MENU).forEach(function(k){allItems=allItems.concat(MENU[k]);});
+  ["mandi","alfaham","extras"].forEach(function(c){
+    var el=document.getElementById("cnt-"+c);
+    var n=(MENU[c]||[]).length;
+    if(el)el.textContent=n+(c==="extras"?" items":" dishes");
+  });
+}
+
+// Secret tap — tap cloud logo 5x to access admin
+document.getElementById("secret-logo").addEventListener("click",function(){
+  tapN++;
+  clearTimeout(tapT);
+  if(tapN>=5){tapN=0;show("pg-alog");}
+  else{tapT=setTimeout(function(){tapN=0;},2000);}
+});
+
+function goHome(){show("pg-home");history.pushState({p:"home"},"","");}
+function goBack(){if(curCat){renderCat(curCat);show("pg-cat");}else{goHome();}}
+
+window.onpopstate=function(e){
+  if(!e.state)return;
+  if(e.state.p==="home")show("pg-home");
+  else if(e.state.p==="cat"&&e.state.c){curCat=e.state.c;renderCat(e.state.c);show("pg-cat");}
+  else if(e.state.p==="dish"&&e.state.c&&e.state.d){curCat=e.state.c;renderDish(e.state.c,e.state.d);show("pg-dish");}
+};
+history.replaceState({p:"home"},"","");
+
+(function(){
+  var sx=0,sy=0;
+  document.addEventListener("touchstart",function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  document.addEventListener("touchend",function(e){
+    var dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)>80&&Math.abs(dx)>Math.abs(dy)*2&&dx>0)history.back();
+  },{passive:true});
+})();
+
+function getPrices(item){
+  var p={};
+  if(item.price_full!=null)p.full=item.price_full;
+  if(item.price_3_4!=null)p["3/4"]=item.price_3_4;
+  if(item.price_half!=null)p.half=item.price_half;
+  if(item.price_qtr!=null)p.qtr=item.price_qtr;
+  if(item.price_portion!=null)p.portion=item.price_portion;
+  if(item.price_piece!=null)p.piece=item.price_piece;
+  return p;
+}
+
+function renderCat(catId){
+  var meta=CMETA[catId]||{title:catId,subtitle:""};
+  document.getElementById("cat-title").textContent=meta.title;
+  document.getElementById("cat-sub").textContent=meta.subtitle;
+  var list=document.getElementById("ilist");
+  list.innerHTML="";
+  var items=MENU[catId]||[];
+  items.forEach(function(item,i){
+    var prices=getPrices(item);
+    var ph="";
+    Object.keys(prices).forEach(function(s){
+      ph+='<div class="pchip"><div><div class="pslbl">'+s.toUpperCase()+'</div><div class="pssrv">'+(SRV[s]||"")+'</div></div><div class="psamt"><span class="psrs">₹</span>'+prices[s]+'</div></div>';
+    });
+    var ih=item.img?'<img class="dimg" src="'+item.img+'" alt="'+item.name+'">'
+      :'<div class="dph"><div class="pe">🍽️</div><div class="pl">Photo coming soon</div></div>';
+    var card=document.createElement("div");
+    card.className="dcard";
+    card.style.animationDelay=(i*0.05)+"s";
+    card.innerHTML=ih+'<div class="dbody"><div class="dtop"><div class="dname">'+item.name+'</div><div class="dbadge">'+(item.badge||"")+'</div></div><div class="dtagline">'+(item.tagline||"")+'</div><div class="ppreview">'+ph+'</div><div class="vdbtn">View Full Details →</div></div>';
+    card.onclick=function(){openDish(catId,item.id);};
+    list.appendChild(card);
+  });
+}
+
+function openCat(catId){
+  curCat=catId;
+  renderCat(catId);
+  show("pg-cat");
+  history.pushState({p:"cat",c:catId},"","");
+}
+
+function renderDish(catId,dishId){
+  var items=MENU[catId]||[];
+  var item=null;
+  for(var i=0;i<items.length;i++){if(items[i].id===dishId){item=items[i];break;}}
+  if(!item)return;
+  var hi=document.getElementById("dhimg");
+  hi.src=item.img||"";hi.alt=item.name;
+  hi.style.display=item.img?"block":"none";
+  document.getElementById("dhbadge").textContent=item.badge||"";
+  document.getElementById("ddname").textContent=item.name;
+  document.getElementById("ddarab").textContent=item.arabic||"";
+  document.getElementById("dddesc").textContent=item.description||"";
+  var prices=getPrices(item);
+  var pg=document.getElementById("dpgrid");
+  pg.innerHTML="";
+  Object.keys(prices).forEach(function(size){
+    var pc=document.createElement("div");
+    pc.className="pcard";
+    pc.innerHTML='<div class="pvl"><div class="pvsz">'+size.toUpperCase()+'</div><div class="pvsrv">'+(SRV[size]||"")+'</div><div class="pvdsc">'+(SRVD[size]||"")+'</div></div><div class="pvp"><span class="pvrs">₹</span>'+prices[size]+'</div>';
+    pg.appendChild(pc);
+  });
+  var inc=item.includes?item.includes.split(","):[];
+  var ig=document.getElementById("dincgrid");
+  ig.innerHTML="";
+  inc.forEach(function(x){
+    var c=document.createElement("div");c.className="inchip";c.textContent=x.trim();ig.appendChild(c);
+  });
+  document.getElementById("dnotes").textContent=item.notes||"";
+}
+
+function openDish(catId,dishId){
+  curCat=catId;
+  renderDish(catId,dishId);
+  show("pg-dish");
+  history.pushState({p:"dish",c:catId,d:dishId},"","");
+}
+
+// ADMIN
+function doLogin(){
+  if(document.getElementById("pw-inp").value==="cloud9admin"){
+    show("pg-admin");loadAdmin();
+  }else{
+    var e=document.getElementById("aerr");e.style.display="block";
+    setTimeout(function(){e.style.display="none";},3000);
+  }
+}
+function doLogout(){show("pg-alog");document.getElementById("pw-inp").value="";}
+
+function loadAdmin(){
+  MENU=getData();
+  allItems=[];
+  Object.keys(MENU).forEach(function(k){allItems=allItems.concat(MENU[k]);});
+  renderAdmin();
+}
+
+function renderAdmin(){
+  var items=allItems.filter(function(i){return i.category===admCat;});
+  var list=document.getElementById("dlist");
+  if(!items.length){list.innerHTML='<div class="lrow">No dishes yet.</div>';return;}
+  list.innerHTML=items.map(function(item){
+    var pts=[];
+    if(item.price_full)pts.push("Full Rs"+item.price_full);
+    if(item.price_3_4)pts.push("3/4 Rs"+item.price_3_4);
+    if(item.price_half)pts.push("Half Rs"+item.price_half);
+    if(item.price_qtr)pts.push("Qtr Rs"+item.price_qtr);
+    if(item.price_portion)pts.push("Rs"+item.price_portion);
+    if(item.price_piece)pts.push("Rs"+item.price_piece+"/pc");
+    var th=item.img?'<div class="dthumb"><img src="'+item.img+'" onerror="this.parentElement.textContent=\'🍽️\'"></div>'
+      :'<div class="dthumb">🍽️</div>';
+    return '<div class="drow">'+th+'<div class="drinfo"><div class="drname">'+item.name+'</div><div class="drbadge">'+(item.badge||"")+'</div><div class="drprice">'+(pts.join(" · ")||"No prices")+'</div></div><div class="dract"><button class="ebtn" onclick="openEdit(\''+item.id+'\')">Edit</button><button class="delbtn" onclick="delDish(\''+item.id+'\',\''+item.name.replace(/'/g,"").replace(/"/g,"")+'\')">Del</button></div></div>';
+  }).join("");
+}
+
+function switchCat(cat,el){
+  admCat=cat;
+  document.querySelectorAll(".ctab").forEach(function(t){t.classList.remove("on");});
+  el.classList.add("on");
+  renderAdmin();
+}
+
+function clearForm(){
+  ["eid","ename","earab","ebadge","etagline","edesc","eimg","einc","enotes","esort","pf","p34","ph","pq","pp","ppc"].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.value="";
+  });
+}
+
+function openAdd(){
+  clearForm();
+  document.getElementById("ecat").value=admCat;
+  document.getElementById("mttl-txt").textContent="Add New Dish";
+  document.getElementById("mbg").classList.add("on");
+}
+
+function openEdit(id){
+  var item=null;
+  for(var i=0;i<allItems.length;i++){if(allItems[i].id===id){item=allItems[i];break;}}
+  if(!item)return;
+  clearForm();
+  document.getElementById("eid").value=item.id;
+  document.getElementById("ecat").value=item.category;
+  document.getElementById("ename").value=item.name||"";
+  document.getElementById("earab").value=item.arabic||"";
+  document.getElementById("ebadge").value=item.badge||"";
+  document.getElementById("etagline").value=item.tagline||"";
+  document.getElementById("edesc").value=item.description||"";
+  document.getElementById("eimg").value=item.img||"";
+  document.getElementById("einc").value=item.includes||"";
+  document.getElementById("enotes").value=item.notes||"";
+  document.getElementById("esort").value=item.sort_order||0;
+  if(item.price_full)document.getElementById("pf").value=item.price_full;
+  if(item.price_3_4)document.getElementById("p34").value=item.price_3_4;
+  if(item.price_half)document.getElementById("ph").value=item.price_half;
+  if(item.price_qtr)document.getElementById("pq").value=item.price_qtr;
+  if(item.price_portion)document.getElementById("pp").value=item.price_portion;
+  if(item.price_piece)document.getElementById("ppc").value=item.price_piece;
+  document.getElementById("mttl-txt").textContent="Edit — "+item.name;
+  document.getElementById("mbg").classList.add("on");
+}
+
+function closeModal(){document.getElementById("mbg").classList.remove("on");}
+
+function saveDish(){
+  var btn=document.getElementById("svbtn");
+  btn.disabled=true;btn.textContent="Saving...";
+  var id=document.getElementById("eid").value;
+  var cat=document.getElementById("ecat").value;
+  var body={
+    id:id||"dish-"+Date.now(),
+    category:cat,
+    name:document.getElementById("ename").value.trim(),
+    arabic:document.getElementById("earab").value.trim()||null,
+    badge:document.getElementById("ebadge").value.trim()||null,
+    tagline:document.getElementById("etagline").value.trim()||null,
+    description:document.getElementById("edesc").value.trim()||null,
+    img:document.getElementById("eimg").value.trim()||null,
+    includes:document.getElementById("einc").value.trim()||null,
+    notes:document.getElementById("enotes").value.trim()||null,
+    sort_order:parseInt(document.getElementById("esort").value)||0,
+    price_full:parseInt(document.getElementById("pf").value)||null,
+    price_3_4:parseInt(document.getElementById("p34").value)||null,
+    price_half:parseInt(document.getElementById("ph").value)||null,
+    price_qtr:parseInt(document.getElementById("pq").value)||null,
+    price_portion:parseInt(document.getElementById("pp").value)||null,
+    price_piece:parseInt(document.getElementById("ppc").value)||null,
+    active:true
+  };
+  if(!body.name){showToast("Dish name is required",true);btn.disabled=false;btn.textContent="Save Changes";return;}
+  if(!MENU[cat])MENU[cat]=[];
+  if(id){
+    var idx=-1;
+    for(var i=0;i<MENU[cat].length;i++){if(MENU[cat][i].id===id){idx=i;break;}}
+    if(idx>=0)MENU[cat][idx]=body;else MENU[cat].push(body);
+  }else{
+    MENU[cat].push(body);
+  }
+  allItems=[];Object.keys(MENU).forEach(function(k){allItems=allItems.concat(MENU[k]);});
+  saveData(MENU);
+  renderAdmin();
+  closeModal();
+  showToast(id?"Dish updated!":"New dish added!");
+  btn.disabled=false;btn.textContent="Save Changes";
+}
+
+function delDish(id,name){
+  if(!confirm("Delete "+name+"? This cannot be undone."))return;
+  Object.keys(MENU).forEach(function(cat){MENU[cat]=MENU[cat].filter(function(i){return i.id!==id;});});
+  allItems=[];Object.keys(MENU).forEach(function(k){allItems=allItems.concat(MENU[k]);});
+  saveData(MENU);
+  renderAdmin();
+  showToast("Dish deleted.");
+}
+
+function showToast(msg,isErr){
+  var t=document.getElementById("toast");
+  t.textContent=msg;
+  t.className="toast"+(isErr?" err":"")+" on";
+  setTimeout(function(){t.classList.remove("on");},3000);
+}
+
+// INIT
+initMenu();
+</script>
+</body>
+</html>
